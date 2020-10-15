@@ -2,7 +2,7 @@ import Foundation
 import Network
 
 /// Defines a websocket connection.
-protocol WebSocketConnection {
+public protocol WebSocketConnection {
     /// Connect to the websocket.
     func connect()
 
@@ -32,7 +32,7 @@ protocol WebSocketConnection {
 }
 
 /// Defines a delegate for a websocket connection.
-protocol WebSocketConnectionDelegate: AnyObject {
+public protocol WebSocketConnectionDelegate: AnyObject {
     /// Tells the delegate that the WebSocket did connect successfully.
     /// - Parameter connection: The active `WebSocketConnection`.
     func webSocketDidConnect(connection: WebSocketConnection)

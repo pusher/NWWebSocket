@@ -1,11 +1,18 @@
 import Foundation
 import Network
 
-open class NWWebSocket: WebSocketConnection {
+public class NWWebSocket: WebSocketConnection {
 
     // MARK: - Public properties
 
-    weak var delegate: WebSocketConnectionDelegate?
+    public weak var delegate: WebSocketConnectionDelegate?
+
+    public static var defaultOptions: NWProtocolWebSocket.Options {
+        let options = NWProtocolWebSocket.Options()
+        options.autoReplyPing = true
+
+        return options
+    }
 
     // MARK: - Private properties
 
@@ -16,29 +23,22 @@ open class NWWebSocket: WebSocketConnection {
     private var pingTimer: Timer?
     private var intentionalDisconnect: Bool = false
 
-    private static var options: NWProtocolWebSocket.Options {
-        let options = NWProtocolWebSocket.Options()
-        options.autoReplyPing = true
-
-        return options
-    }
-
     // MARK: - Initialization
 
-    convenience init(request: URLRequest,
-                     connectAutomatically: Bool = false,
-                     options: NWProtocolWebSocket.Options = NWWebSocket.options,
-                     connectionQueue: DispatchQueue = .main) {
+    public convenience init(request: URLRequest,
+                            connectAutomatically: Bool = false,
+                            options: NWProtocolWebSocket.Options = NWWebSocket.defaultOptions,
+                            connectionQueue: DispatchQueue = .main) {
 
         self.init(url: request.url!,
                   connectAutomatically: connectAutomatically,
                   connectionQueue: connectionQueue)
     }
 
-    init(url: URL,
-         connectAutomatically: Bool = false,
-         options: NWProtocolWebSocket.Options = NWWebSocket.options,
-         connectionQueue: DispatchQueue = .main) {
+    public init(url: URL,
+                connectAutomatically: Bool = false,
+                options: NWProtocolWebSocket.Options = NWWebSocket.defaultOptions,
+                connectionQueue: DispatchQueue = .main) {
 
         endpoint = .url(url)
 
@@ -59,7 +59,7 @@ open class NWWebSocket: WebSocketConnection {
 
     // MARK: - WebSocketConnection conformance
 
-    func connect() {
+    public func connect() {
         if connection == nil {
             connection = NWConnection(to: endpoint, using: parameters)
         }
@@ -69,7 +69,7 @@ open class NWWebSocket: WebSocketConnection {
         connection?.start(queue: connectionQueue)
     }
 
-    func send(string: String) {
+    public func send(string: String) {
         guard let data = string.data(using: .utf8) else {
             return
         }
@@ -80,7 +80,7 @@ open class NWWebSocket: WebSocketConnection {
         send(data: data, context: context)
     }
 
-    func send(data: Data) {
+    public func send(data: Data) {
         let metadata = NWProtocolWebSocket.Metadata(opcode: .binary)
         let context = NWConnection.ContentContext(identifier: "binaryContext",
                                                   metadata: [metadata])
@@ -88,7 +88,7 @@ open class NWWebSocket: WebSocketConnection {
         send(data: data, context: context)
     }
 
-    func listen() {
+    public func listen() {
         connection?.receiveMessage { [weak self] (data, context, _, error) in
             guard let self = self else {
                 return
@@ -109,7 +109,7 @@ open class NWWebSocket: WebSocketConnection {
         }
     }
 
-    func ping(interval: TimeInterval) {
+    public func ping(interval: TimeInterval) {
         pingTimer = .scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             guard let self = self else {
                 return
@@ -120,7 +120,7 @@ open class NWWebSocket: WebSocketConnection {
         pingTimer?.tolerance = 0.01
     }
 
-    func ping() {
+    public func ping() {
         let metadata = NWProtocolWebSocket.Metadata(opcode: .ping)
         metadata.setPongHandler(connectionQueue) { [weak self] error in
             guard let self = self else {
@@ -140,7 +140,7 @@ open class NWWebSocket: WebSocketConnection {
         send(data: Data(), context: context)
     }
 
-    func disconnect(closeCode: NWProtocolWebSocket.CloseCode = .protocolCode(.normalClosure)) {
+    public func disconnect(closeCode: NWProtocolWebSocket.CloseCode = .protocolCode(.normalClosure)) {
         intentionalDisconnect = true
 
         // Call `cancel()` directly for a `normalClosure`
@@ -226,7 +226,7 @@ open class NWWebSocket: WebSocketConnection {
 
                             // If a connection closure was sent, inform delegate on completion
                             if let socketMetadata = context.protocolMetadata.first as? NWProtocolWebSocket.Metadata,
-                                socketMetadata.opcode == .close {
+                               socketMetadata.opcode == .close {
                                 self.delegate?.webSocketDidDisconnect(connection: self,
                                                                       closeCode: socketMetadata.closeCode,
                                                                       reason: data)
@@ -255,8 +255,8 @@ open class NWWebSocket: WebSocketConnection {
     /// - Returns: `true` if the error should be reported.
     private func shouldReportNWError(_ error: NWError) -> Bool {
         if case let .posix(code) = error,
-        code == .ENOTCONN || code == .ECANCELED,
-        intentionalDisconnect {
+           code == .ENOTCONN || code == .ECANCELED,
+           intentionalDisconnect {
             return false
         } else {
             return true
