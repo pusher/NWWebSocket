@@ -1,7 +1,7 @@
 import Foundation
 import Network
 
-public class NWWebSocket: WebSocketConnection {
+open class NWWebSocket: WebSocketConnection {
 
     // MARK: - Public properties
 
