@@ -3,5 +3,6 @@ import XCTest
 import NWWebSocketTests
 
 var tests = [XCTestCaseEntry]()
-tests += NWWebSocketTests.allTests()
+tests += NWWebSocketTests.__allTests()
+
 XCTMain(tests)
