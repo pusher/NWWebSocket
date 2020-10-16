@@ -1,7 +1,7 @@
 import Foundation
 import Network
 
-public class NWWebSocket: WebSocketConnection {
+open class NWWebSocket: WebSocketConnection {
 
     // MARK: - Public properties
 
@@ -59,7 +59,7 @@ public class NWWebSocket: WebSocketConnection {
 
     // MARK: - WebSocketConnection conformance
 
-    public func connect() {
+    open func connect() {
         if connection == nil {
             connection = NWConnection(to: endpoint, using: parameters)
         }
@@ -69,7 +69,7 @@ public class NWWebSocket: WebSocketConnection {
         connection?.start(queue: connectionQueue)
     }
 
-    public func send(string: String) {
+    open func send(string: String) {
         guard let data = string.data(using: .utf8) else {
             return
         }
@@ -80,7 +80,7 @@ public class NWWebSocket: WebSocketConnection {
         send(data: data, context: context)
     }
 
-    public func send(data: Data) {
+    open func send(data: Data) {
         let metadata = NWProtocolWebSocket.Metadata(opcode: .binary)
         let context = NWConnection.ContentContext(identifier: "binaryContext",
                                                   metadata: [metadata])
@@ -109,7 +109,7 @@ public class NWWebSocket: WebSocketConnection {
         }
     }
 
-    public func ping(interval: TimeInterval) {
+    open func ping(interval: TimeInterval) {
         pingTimer = .scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             guard let self = self else {
                 return
@@ -120,7 +120,7 @@ public class NWWebSocket: WebSocketConnection {
         pingTimer?.tolerance = 0.01
     }
 
-    public func ping() {
+    open func ping() {
         let metadata = NWProtocolWebSocket.Metadata(opcode: .ping)
         metadata.setPongHandler(connectionQueue) { [weak self] error in
             guard let self = self else {
@@ -140,7 +140,7 @@ public class NWWebSocket: WebSocketConnection {
         send(data: Data(), context: context)
     }
 
-    public func disconnect(closeCode: NWProtocolWebSocket.CloseCode = .protocolCode(.normalClosure)) {
+    open func disconnect(closeCode: NWProtocolWebSocket.CloseCode = .protocolCode(.normalClosure)) {
         intentionalDisconnect = true
 
         // Call `cancel()` directly for a `normalClosure`
