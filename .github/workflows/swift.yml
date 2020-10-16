@@ -16,6 +16,7 @@ jobs:
     - name: Build
       run: swift build -v
     - name: Run tests
-      run: swift test -v --enable-code-coverage
+      run: swift package generate-xcodeproj
+      run: xcodebuild test -scheme NWWebSocket-Package
     - name: Codecov
       uses: codecov/codecov-action@v1.0.13
