@@ -1,6 +1,6 @@
 # NWWebSocket
 
-![Build Status](https://app.bitrise.io/app/3c6dac112b98e7fe.svg?token=n0z-aWua_Bc35kUGu4qpYg)
+![Build Status](https://github.com/pusher/NWWebSocket/workflows/CI/badge.svg)
 ![Languages](https://img.shields.io/badge/languages-swift-orange.svg)
 ![Platform](https://img.shields.io/cocoapods/p/NWWebSocket.svg)
 [![Cocoapods Compatible](https://img.shields.io/cocoapods/v/NWWebSocket.svg)](https://cocoapods.org/pods/NWWebSocket)
