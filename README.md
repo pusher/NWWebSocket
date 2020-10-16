@@ -7,6 +7,6 @@
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Twitter](https://img.shields.io/badge/twitter-@Pusher-blue.svg?style=flat)](http://twitter.com/Pusher)
 [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg)](https://raw.githubusercontent.com/pusher/NWWebSocket/master/LICENSE.md)
-[![codecov](https://codecov.io/gh/pusher/pusher-websocket-swift/branch/master/graph/badge.svg)](https://codecov.io/gh/pusher/pusher-websocket-swift)
+[![codecov](https://codecov.io/gh/pusher/NWWebSocket/branch/master/graph/badge.svg)](https://codecov.io/gh/pusher/NWWebSocket)
 
 A WebSocket client written in Swift, using the Network framework from Apple.
