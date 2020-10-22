@@ -3,110 +3,122 @@ import Network
 @testable import NWWebSocket
 
 class NWWebSocketTests: XCTestCase {
-    var socket: NWWebSocket!
+    static var socket: NWWebSocket!
+    static var server: NWSwiftWebSocketServer!
 
-    var connectExpectation: XCTestExpectation? {
+    static var connectExpectation: XCTestExpectation? {
         didSet {
-            shouldDisconnectImmediately = false
+            Self.shouldDisconnectImmediately = false
         }
     }
-    var disconnectExpectation: XCTestExpectation! {
+    static var disconnectExpectation: XCTestExpectation! {
         didSet {
-            shouldDisconnectImmediately = true
+            Self.shouldDisconnectImmediately = true
         }
     }
-    var stringMessageExpectation: XCTestExpectation! {
+    static var stringMessageExpectation: XCTestExpectation! {
         didSet {
-            shouldDisconnectImmediately = false
+            Self.shouldDisconnectImmediately = false
         }
     }
-    var dataMessageExpectation: XCTestExpectation! {
+    static var dataMessageExpectation: XCTestExpectation! {
         didSet {
-            shouldDisconnectImmediately = false
+            Self.shouldDisconnectImmediately = false
         }
     }
-    var pongExpectation: XCTestExpectation? {
+    static var pongExpectation: XCTestExpectation? {
         didSet {
-            shouldDisconnectImmediately = false
+            Self.shouldDisconnectImmediately = false
         }
     }
-    var pingsWithIntervalExpectation: XCTestExpectation? {
+    static var pingsWithIntervalExpectation: XCTestExpectation? {
         didSet {
-            shouldDisconnectImmediately = false
+            Self.shouldDisconnectImmediately = false
         }
     }
-    var errorExpectation: XCTestExpectation? {
+    static var errorExpectation: XCTestExpectation? {
         didSet {
-            shouldDisconnectImmediately = false
+            Self.shouldDisconnectImmediately = false
         }
     }
 
-    var shouldDisconnectImmediately: Bool!
-    var receivedPongTimestamps: [Date]!
+    static var shouldDisconnectImmediately: Bool!
+    static var receivedPongTimestamps: [Date]!
 
     static let expectationTimeout = 5.0
     static let stringMessage = "This is a string message!"
     static let dataMessage = "This is a data message!".data(using: .utf8)!
     static let expectedReceivedPongsCount = 3
+    static let repeatedPingInterval = 0.5
+    static let validLocalhostServerPort: UInt16 = 3000
+    static let invalidLocalhostServerPort: UInt16 = 2000
+
+    override static func setUp() {
+        super.setUp()
+
+        server = NWSwiftWebSocketServer(port: Self.validLocalhostServerPort)
+        try! server.start()
+        let serverURL = URL(string: "ws://localhost:\(Self.validLocalhostServerPort)")!
+        socket = NWWebSocket(url: serverURL)
+    }
 
     override func setUp() {
         super.setUp()
 
-        socket = NWWebSocket(url: URL(string: "wss://echo.websocket.org")!)
-        socket.delegate = self
-        receivedPongTimestamps = []
+        Self.socket.delegate = self
+        Self.receivedPongTimestamps = []
     }
 
     // MARK: - Test methods
 
     func testConnect() {
-        connectExpectation = XCTestExpectation(description: "connectExpectation")
-        socket.connect()
-        wait(for: [connectExpectation!], timeout: Self.expectationTimeout)
+        Self.connectExpectation = XCTestExpectation(description: "connectExpectation")
+        Self.socket.connect()
+        wait(for: [Self.connectExpectation!], timeout: Self.expectationTimeout)
     }
 
     func testDisconnect() {
-        disconnectExpectation = XCTestExpectation(description: "disconnectExpectation")
-        socket.connect()
-        wait(for: [disconnectExpectation], timeout: Self.expectationTimeout)
+        Self.disconnectExpectation = XCTestExpectation(description: "disconnectExpectation")
+        Self.socket.connect()
+        wait(for: [Self.disconnectExpectation], timeout: Self.expectationTimeout)
     }
 
     func testReceiveStringMessage() {
-        stringMessageExpectation = XCTestExpectation(description: "stringMessageExpectation")
-        socket.connect()
-        socket.send(string: Self.stringMessage)
-        wait(for: [stringMessageExpectation], timeout: Self.expectationTimeout)
+        Self.stringMessageExpectation = XCTestExpectation(description: "stringMessageExpectation")
+        Self.socket.connect()
+        Self.socket.send(string: Self.stringMessage)
+        wait(for: [Self.stringMessageExpectation], timeout: Self.expectationTimeout)
     }
 
     func testReceiveDataMessage() {
-        dataMessageExpectation = XCTestExpectation(description: "dataMessageExpectation")
-        socket.connect()
-        socket.send(data: Self.dataMessage)
-        wait(for: [dataMessageExpectation], timeout: Self.expectationTimeout)
+        Self.dataMessageExpectation = XCTestExpectation(description: "dataMessageExpectation")
+        Self.socket.connect()
+        Self.socket.send(data: Self.dataMessage)
+        wait(for: [Self.dataMessageExpectation], timeout: Self.expectationTimeout)
     }
 
     func testReceivePong() {
-        pongExpectation = XCTestExpectation(description: "pongExpectation")
-        socket.connect()
-        socket.ping()
-        wait(for: [pongExpectation!], timeout: Self.expectationTimeout)
+        Self.pongExpectation = XCTestExpectation(description: "pongExpectation")
+        Self.socket.connect()
+        Self.socket.ping()
+        wait(for: [Self.pongExpectation!], timeout: Self.expectationTimeout)
     }
 
     func testPingsWithInterval() {
-        pingsWithIntervalExpectation = XCTestExpectation(description: "pingsWithIntervalExpectation")
-        socket.connect()
-        socket.ping(interval: 0.5)
-        wait(for: [pingsWithIntervalExpectation!], timeout: Self.expectationTimeout)
+        Self.pingsWithIntervalExpectation = XCTestExpectation(description: "pingsWithIntervalExpectation")
+        Self.socket.connect()
+        Self.socket.ping(interval: Self.repeatedPingInterval)
+        wait(for: [Self.pingsWithIntervalExpectation!], timeout: Self.expectationTimeout)
     }
 
     func testReceiveError() {
         // Redefine socket with invalid path
-        socket = NWWebSocket(request: URLRequest(url: URL(string: "wss://echo.websocket.org/abc")!))
-        socket.delegate = self
+        Self.socket = NWWebSocket(request: URLRequest(url: URL(string: "ws://localhost:\(Self.invalidLocalhostServerPort)")!))
+        Self.socket.delegate = self
 
-        errorExpectation = XCTestExpectation(description: "errorExpectation")
-        socket.connect()
-        wait(for: [errorExpectation!], timeout: Self.expectationTimeout)
+        Self.errorExpectation = XCTestExpectation(description: "errorExpectation")
+        Self.socket.connect()
+        wait(for: [Self.errorExpectation!], timeout: Self.expectationTimeout)
     }
 
 }
@@ -116,43 +128,43 @@ class NWWebSocketTests: XCTestCase {
 extension NWWebSocketTests: WebSocketConnectionDelegate {
 
     func webSocketDidConnect(connection: WebSocketConnection) {
-        connectExpectation?.fulfill()
+        Self.connectExpectation?.fulfill()
 
-        if shouldDisconnectImmediately {
-            socket.disconnect()
+        if Self.shouldDisconnectImmediately {
+            Self.socket.disconnect()
         }
     }
 
     func webSocketDidDisconnect(connection: WebSocketConnection,
                                 closeCode: NWProtocolWebSocket.CloseCode, reason: Data?) {
-        disconnectExpectation.fulfill()
+        Self.disconnectExpectation.fulfill()
     }
 
     func webSocketDidReceiveError(connection: WebSocketConnection, error: Error) {
-        errorExpectation?.fulfill()
+        Self.errorExpectation?.fulfill()
     }
 
     func webSocketDidReceivePong(connection: WebSocketConnection) {
-        pongExpectation?.fulfill()
+        Self.pongExpectation?.fulfill()
 
-        guard pingsWithIntervalExpectation != nil else {
+        guard Self.pingsWithIntervalExpectation != nil else {
             return
         }
 
-        if receivedPongTimestamps.count == Self.expectedReceivedPongsCount {
-            pingsWithIntervalExpectation?.fulfill()
+        if Self.receivedPongTimestamps.count == Self.expectedReceivedPongsCount {
+            Self.pingsWithIntervalExpectation?.fulfill()
         }
-        receivedPongTimestamps.append(Date())
+        Self.receivedPongTimestamps.append(Date())
     }
 
     func webSocketDidReceiveMessage(connection: WebSocketConnection, string: String) {
         XCTAssertEqual(string, Self.stringMessage)
-        stringMessageExpectation.fulfill()
+        Self.stringMessageExpectation.fulfill()
     }
 
     func webSocketDidReceiveMessage(connection: WebSocketConnection, data: Data) {
         XCTAssertEqual(data, Self.dataMessage)
-        dataMessageExpectation.fulfill()
+        Self.dataMessageExpectation.fulfill()
     }
 }
 
