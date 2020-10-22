@@ -1,12 +1,16 @@
 import Foundation
 import Network
 
-class NWSwiftWebSocketServer {
-    let port: NWEndpoint.Port
-    let listener: NWListener
-    let parameters: NWParameters
+internal class NWSwiftWebSocketServer {
 
+    // MARK: - Private properties
+
+    private let port: NWEndpoint.Port
+    private let listener: NWListener
+    private let parameters: NWParameters
     private var connectionsByID: [Int: NWServerConnection] = [:]
+
+    // MARK: - Lifecycle
 
     init(port: UInt16) {
         self.port = NWEndpoint.Port(rawValue: port)!
@@ -18,6 +22,8 @@ class NWSwiftWebSocketServer {
         parameters.defaultProtocolStack.applicationProtocols.insert(wsOptions, at: 0)
         listener = try! NWListener(using: parameters, on: self.port)
     }
+
+    // MARK: - Public methods
 
     func start() throws {
         print("Server starting...")
@@ -38,6 +44,8 @@ class NWSwiftWebSocketServer {
         }
     }
 
+    // MARK: - Private methods
+
     private func didAccept(nwConnection: NWConnection) {
         let connection = NWServerConnection(nwConnection: nwConnection)
         connectionsByID[connection.id] = connection
@@ -50,14 +58,19 @@ class NWSwiftWebSocketServer {
             }
             self.connectionDidStop(connection)
         }
-        connection.didReceiveHandler = { data in
+        connection.didReceiveStringHandler = { string in
+            self.connectionsByID.values.forEach { connection in
+                print("sent \(string) to open connection \(connection.id)")
+                connection.send(string: string)
+            }
+        }
+        connection.didReceiveDataHandler = { data in
             self.connectionsByID.values.forEach { connection in
                 print("sent \(String(data: data, encoding: .utf8) ?? "NOTHING") to open connection \(connection.id)")
                 connection.send(data: data)
             }
         }
         
-        connection.send(data: "Welcome you are connection: \(connection.id)".data(using: .utf8)!)
         print("server did open connection \(connection.id)")
     }
 
