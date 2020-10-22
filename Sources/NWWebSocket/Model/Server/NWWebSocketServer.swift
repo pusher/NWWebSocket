@@ -34,6 +34,10 @@ internal class NWSwiftWebSocketServer {
         listener?.start(queue: .main)
     }
 
+    func stop() {
+        listener?.cancel()
+    }
+
     // MARK: - Private methods
 
     private func didAccept(nwConnection: NWConnection) {
