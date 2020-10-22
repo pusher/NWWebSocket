@@ -6,7 +6,7 @@ internal class NWSwiftWebSocketServer {
     // MARK: - Private properties
 
     private let port: NWEndpoint.Port
-    private let listener: NWListener
+    private var listener: NWListener?
     private let parameters: NWParameters
     private var connectionsByID: [Int: NWServerConnection] = [:]
 
@@ -20,28 +20,18 @@ internal class NWSwiftWebSocketServer {
         let wsOptions = NWProtocolWebSocket.Options()
         wsOptions.autoReplyPing = true
         parameters.defaultProtocolStack.applicationProtocols.insert(wsOptions, at: 0)
-        listener = try! NWListener(using: parameters, on: self.port)
     }
 
     // MARK: - Public methods
 
     func start() throws {
         print("Server starting...")
-        listener.stateUpdateHandler = self.stateDidChange(to:)
-        listener.newConnectionHandler = self.didAccept(nwConnection:)
-        listener.start(queue: .main)
-    }
-
-    func stateDidChange(to newState: NWListener.State) {
-        switch newState {
-        case .ready:
-            print("Server ready.")
-        case .failed(let error):
-            print("Server failure, error: \(error.localizedDescription)")
-            exit(EXIT_FAILURE)
-        default:
-            break
+        if listener == nil {
+            listener = try! NWListener(using: parameters, on: self.port)
         }
+        listener?.stateUpdateHandler = self.stateDidChange(to:)
+        listener?.newConnectionHandler = self.didAccept(nwConnection:)
+        listener?.start(queue: .main)
     }
 
     // MARK: - Private methods
@@ -74,19 +64,39 @@ internal class NWSwiftWebSocketServer {
         print("server did open connection \(connection.id)")
     }
 
+    private func stateDidChange(to newState: NWListener.State) {
+        switch newState {
+        case .setup:
+            print("Server is setup.")
+        case .waiting(let error):
+            print("Server is waiting to start, non-fatal error: \(error.localizedDescription)")
+        case .ready:
+            print("Server ready.")
+        case .cancelled:
+            self.stopSever(error: nil)
+        case .failed(let error):
+            self.stopSever(error: error)
+        @unknown default:
+            fatalError()
+        }
+    }
+
     private func connectionDidStop(_ connection: NWServerConnection) {
         self.connectionsByID.removeValue(forKey: connection.id)
         print("server did close connection \(connection.id)")
     }
 
-    private func stop() {
-        self.listener.stateUpdateHandler = nil
-        self.listener.newConnectionHandler = nil
-        self.listener.cancel()
+    private func stopSever(error: NWError?) {
+        self.listener = nil
         for connection in self.connectionsByID.values {
             connection.didStopHandler = nil
             connection.stop()
         }
         self.connectionsByID.removeAll()
+        if let error = error {
+            print("Server failure, error: \(error.localizedDescription)")
+        } else {
+            print("Server stopped normally.")
+        }
     }
 }

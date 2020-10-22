@@ -89,14 +89,20 @@ internal class NWServerConnection {
 
     private func stateDidChange(to state: NWConnection.State) {
         switch state {
+        case .setup:
+            print("connection is setup.")
         case .waiting(let error):
-            connectionDidFail(error: error)
+            connectionDidReceiveError(error)
+        case .preparing:
+            print("connection is being establised.")
         case .ready:
             print("connection \(id) ready")
+        case .cancelled:
+            stopConnection(error: nil)
         case .failed(let error):
-            connectionDidFail(error: error)
-        default:
-            break
+            stopConnection(error: error)
+        @unknown default:
+            fatalError()
         }
     }
 
@@ -106,7 +112,7 @@ internal class NWServerConnection {
                 self.receiveMessage(data: data, context: context)
             }
             if let error = error {
-                self.connectionDidFail(error: error)
+                self.connectionDidReceiveError(error)
             } else {
                 self.listen()
             }
@@ -119,29 +125,27 @@ internal class NWServerConnection {
                              isComplete: true,
                              completion: .contentProcessed( { error in
                                 if let error = error {
-                                    self.connectionDidFail(error: error)
+                                    self.connectionDidReceiveError(error)
                                     return
                                 }
                                 print("connection \(self.id) did send, data: \(String(describing: data))")
                              }))
     }
 
-    private func connectionDidFail(error: Error) {
-        print("connection \(id) did fail, error: \(error)")
-        stopConnection(error: error)
-    }
-
-    private func connectionDidEnd() {
-        print("connection \(id) did end")
-        stopConnection(error: nil)
+    private func connectionDidReceiveError(_ error: NWError) {
+        print("connection did receive error: \(error.localizedDescription)")
     }
 
     private func stopConnection(error: Error?) {
         connection.stateUpdateHandler = nil
-        connection.cancel()
-        if let didStopCallback = didStopHandler {
+        if let didStopHandler = didStopHandler {
             self.didStopHandler = nil
-            didStopCallback(error)
+            didStopHandler(error)
+        }
+        if let error = error {
+            print("connection \(id) did fail, error: \(error)")
+        } else {
+            print("connection \(id) did end")
         }
     }
 }
