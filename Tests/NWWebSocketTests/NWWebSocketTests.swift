@@ -53,18 +53,13 @@ class NWWebSocketTests: XCTestCase {
     static let validLocalhostServerPort: UInt16 = 3000
     static let invalidLocalhostServerPort: UInt16 = 2000
 
-    override static func setUp() {
-        super.setUp()
-
-        server = NWSwiftWebSocketServer(port: Self.validLocalhostServerPort)
-        try! server.start()
-        let serverURL = URL(string: "ws://localhost:\(Self.validLocalhostServerPort)")!
-        socket = NWWebSocket(url: serverURL)
-    }
-
     override func setUp() {
         super.setUp()
 
+        Self.server = NWSwiftWebSocketServer(port: Self.validLocalhostServerPort)
+        try! Self.server.start()
+        let serverURL = URL(string: "ws://localhost:\(Self.validLocalhostServerPort)")!
+        Self.socket = NWWebSocket(url: serverURL)
         Self.socket.delegate = self
         Self.receivedPongTimestamps = []
     }
