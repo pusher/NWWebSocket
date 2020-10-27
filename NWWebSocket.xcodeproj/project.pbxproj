@@ -293,7 +293,7 @@
             SWIFT_VERSION = "5.0";
             TARGET_NAME = "NWWebSocket";
             TVOS_DEPLOYMENT_TARGET = "13.0";
-            WATCHOS_DEPLOYMENT_TARGET = "2.0";
+            WATCHOS_DEPLOYMENT_TARGET = "6.0";
          };
          name = "Debug";
       };
@@ -334,7 +334,7 @@
             SWIFT_VERSION = "5.0";
             TARGET_NAME = "NWWebSocket";
             TVOS_DEPLOYMENT_TARGET = "13.0";
-            WATCHOS_DEPLOYMENT_TARGET = "2.0";
+            WATCHOS_DEPLOYMENT_TARGET = "6.0";
          };
          name = "Release";
       };
@@ -379,7 +379,7 @@
                "-sdk",
                "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk",
                "-package-description-version",
-               "5.0.0"
+               "5.1.0"
             );
             SWIFT_VERSION = "5.0";
          };
@@ -397,7 +397,7 @@
                "-sdk",
                "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk",
                "-package-description-version",
-               "5.0.0"
+               "5.1.0"
             );
             SWIFT_VERSION = "5.0";
          };
@@ -520,7 +520,7 @@
             SWIFT_VERSION = "5.0";
             TARGET_NAME = "NWWebSocketTests";
             TVOS_DEPLOYMENT_TARGET = "13.0";
-            WATCHOS_DEPLOYMENT_TARGET = "2.0";
+            WATCHOS_DEPLOYMENT_TARGET = "6.0";
          };
          name = "Debug";
       };
@@ -574,7 +574,7 @@
             SWIFT_VERSION = "5.0";
             TARGET_NAME = "NWWebSocketTests";
             TVOS_DEPLOYMENT_TARGET = "13.0";
-            WATCHOS_DEPLOYMENT_TARGET = "2.0";
+            WATCHOS_DEPLOYMENT_TARGET = "6.0";
          };
          name = "Release";
       };
