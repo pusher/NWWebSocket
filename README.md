@@ -10,13 +10,14 @@
 A WebSocket client written in Swift, using the Network framework from Apple.
 
 ## Supported platforms
-- Swift 5.0 and above
+- Swift 5.1 and above
 - Xcode 11.0 and above
 
 ### Deployment targets
 - iOS 13.0 and above
 - macOS 10.15 and above
 - tvOS 13.0 and above
+- watchOS 6.0 and above
 
 ## Communication
 - If you have found a bug or have a feature request, please open an issue
