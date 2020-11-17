@@ -51,9 +51,9 @@ public protocol WebSocketConnectionDelegate: AnyObject {
     /// An error received by a WebSocket is not necessarily fatal.
     /// - Parameters:
     ///   - connection: The `WebSocketConnection` that received an error.
-    ///   - error: The `Error` that was received.
+    ///   - error: The `NWError` that was received.
     func webSocketDidReceiveError(connection: WebSocketConnection,
-                                  error: Error)
+                                  error: NWError)
 
     /// Tells the delegate that the WebSocket received a 'pong' from the server.
     /// - Parameter connection: The active `WebSocketConnection`.
