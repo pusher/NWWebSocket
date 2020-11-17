@@ -163,6 +163,8 @@ open class NWWebSocket: WebSocketConnection {
 
     // MARK: - Private methods
 
+    /// The handler for managing changes to the `connection.state` via the `stateUpdateHandler` on a `NWConnection`.
+    /// - Parameter state: The new `NWConnection.State`
     private func stateDidChange(to state: NWConnection.State) {
         switch state {
         case .ready:
@@ -182,6 +184,10 @@ open class NWWebSocket: WebSocketConnection {
         }
     }
 
+    /// Receive a WebSocket message, and handle it according to it's metadata.
+    /// - Parameters:
+    ///   - data: The `Data` that was received in the message.
+    ///   - context: `ContentContext` representing the received message, and its metadata.
     private func receiveMessage(data: Data, context: NWConnection.ContentContext) {
         guard let metadata = context.protocolMetadata.first as? NWProtocolWebSocket.Metadata else {
             return
@@ -215,6 +221,10 @@ open class NWWebSocket: WebSocketConnection {
         }
     }
 
+    /// Send some `Data` over the  active `connection`.
+    /// - Parameters:
+    ///   - data: Some `Data` to send (this should be formatted as binary or UTF-8 encoded text).
+    ///   - context: `ContentContext` representing the message to send, and its metadata.
     private func send(data: Data?, context: NWConnection.ContentContext) {
         connection?.send(content: data,
                          contentContext: context,
@@ -238,6 +248,11 @@ open class NWWebSocket: WebSocketConnection {
                          }))
     }
 
+    /// Tear down the `connection`.
+    ///
+    /// This method should only be called in response to a `connection` which has entered either
+    /// a `cancelled` or `failed` state within the `stateUpdateHandler` closure.
+    /// - Parameter error: error description
     private func stopConnection(error: NWError?) {
         if let error = error, shouldReportNWError(error) {
             delegate?.webSocketDidReceiveError(connection: self, error: error)
@@ -246,12 +261,12 @@ open class NWWebSocket: WebSocketConnection {
         connection = nil
     }
 
-    /// Determine if an Network error should be reported.
+    /// Determine if a Network error should be reported.
     ///
     /// POSIX errors of either `ENOTCONN` ("Socket is not connected") or
     /// `ECANCELED` ("Operation canceled") should not be reported if the disconnection was intentional.
     /// All other errors should be reported.
-    /// - Parameter error: An `NWError` to inspect.
+    /// - Parameter error: The `NWError` to inspect.
     /// - Returns: `true` if the error should be reported.
     private func shouldReportNWError(_ error: NWError) -> Bool {
         if case let .posix(code) = error,
