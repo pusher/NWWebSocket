@@ -135,7 +135,7 @@ extension NWWebSocketTests: WebSocketConnectionDelegate {
         Self.disconnectExpectation.fulfill()
     }
 
-    func webSocketDidReceiveError(connection: WebSocketConnection, error: Error) {
+    func webSocketDidReceiveError(connection: WebSocketConnection, error: NWError) {
         Self.errorExpectation?.fulfill()
     }
 
