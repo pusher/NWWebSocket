@@ -183,6 +183,65 @@ open class NWWebSocket: WebSocketConnection {
         }
     }
 
+    /// The handler for informing the `delegate` if there is a better network path available
+    /// - Parameter isAvailable: `true` if a better network path is available.
+    private func betterPath(isAvailable: Bool) {
+        if isAvailable {
+            migrateConnection { result in
+                switch result {
+                case .success():
+                    print("CONNECTION MIGRATION SUCCEEDED")
+                case .failure(let error):
+                    print("CONNECTION MIGRATION FAILED: \(error.debugDescription)")
+                }
+            }
+        }
+    }
+
+    /// The handler for informing the `delegate` if the network connection viability has changed.
+    /// - Parameter isViable: `true` if the network connection is viable.
+    private func viabilityDidChange(isViable: Bool) {
+        print("CONNECTION VIABLE?: \(isViable)")
+    }
+
+    /// Attempts to migrate the active `connection` to a new one.
+    ///
+    /// Migrating can be useful if the active `connection` detects that a better network path has become available.
+    /// - Parameter completionHandler: Returns a `Result` indicating if the migration was successful or a `NWError` if
+    /// the migration failed for some reason.
+    private func migrateConnection(completionHandler: @escaping (Result<Void, NWError>) -> Void) {
+
+        let migratedConnection = NWConnection(to: endpoint, using: parameters)
+        migratedConnection.stateUpdateHandler = { [weak self] state in
+            guard let self = self else {
+                return
+            }
+
+            switch state {
+            case .ready:
+                migratedConnection.stateUpdateHandler = self.stateDidChange(to:)
+                migratedConnection.betterPathUpdateHandler = self.betterPath(isAvailable:)
+                migratedConnection.viabilityUpdateHandler = self.viabilityDidChange(isViable:)
+                self.connection = migratedConnection
+                self.listen()
+                completionHandler(.success(()))
+            case .waiting(let error):
+                completionHandler(.failure(error))
+            case .failed(let error):
+                completionHandler(.failure(error))
+            case .setup, .preparing:
+                break
+            case .cancelled:
+                completionHandler(.failure(.posix(.ECANCELED)))
+            @unknown default:
+                fatalError()
+            }
+        }
+        migratedConnection.start(queue: connectionQueue)
+    }
+
+    // MARK: Connection data transfer
+
     /// Receive a WebSocket message, and handle it according to it's metadata.
     /// - Parameters:
     ///   - data: The `Data` that was received in the message.
