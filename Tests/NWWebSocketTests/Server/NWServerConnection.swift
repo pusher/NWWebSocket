@@ -57,7 +57,7 @@ internal class NWServerConnection {
             //
             break
         case .ping:
-            //
+            pong()
             break
         case .pong:
             //
@@ -117,6 +117,13 @@ internal class NWServerConnection {
                 self.listen()
             }
         }
+    }
+
+    private func pong() {
+        let metaData = NWProtocolWebSocket.Metadata(opcode: .pong)
+        let context = NWConnection.ContentContext(identifier: "pongContext",
+                                                  metadata: [metaData])
+        self.send(data: Data(), context: context)
     }
 
     private func send(data: Data?, context: NWConnection.ContentContext) {

@@ -137,7 +137,7 @@ open class NWWebSocket: WebSocketConnection {
         let context = NWConnection.ContentContext(identifier: "pingContext",
                                                   metadata: [metadata])
 
-        send(data: Data(), context: context)
+        send(data: "ping".data(using: .utf8), context: context)
     }
 
     open func disconnect(closeCode: NWProtocolWebSocket.CloseCode = .protocolCode(.normalClosure)) {
