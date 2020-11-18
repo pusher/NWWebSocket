@@ -73,7 +73,7 @@ internal class NWSwiftWebSocketServer {
         case .setup:
             print("Server is setup.")
         case .waiting(let error):
-            print("Server is waiting to start, non-fatal error: \(error.localizedDescription)")
+            print("Server is waiting to start, non-fatal error: \(error.debugDescription)")
         case .ready:
             print("Server ready.")
         case .cancelled:
@@ -98,7 +98,7 @@ internal class NWSwiftWebSocketServer {
         }
         self.connectionsByID.removeAll()
         if let error = error {
-            print("Server failure, error: \(error.localizedDescription)")
+            print("Server failure, error: \(error.debugDescription)")
         } else {
             print("Server stopped normally.")
         }

@@ -140,7 +140,7 @@ internal class NWServerConnection {
     }
 
     private func connectionDidReceiveError(_ error: NWError) {
-        print("connection did receive error: \(error.localizedDescription)")
+        print("connection did receive error: \(error.debugDescription)")
     }
 
     private func stopConnection(error: Error?) {
