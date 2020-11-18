@@ -162,6 +162,8 @@ open class NWWebSocket: WebSocketConnection {
 
     // MARK: - Private methods
 
+    // MARK: Connection state changes
+
     /// The handler for managing changes to the `connection.state` via the `stateUpdateHandler` on a `NWConnection`.
     /// - Parameter state: The new `NWConnection.State`
     private func stateDidChange(to state: NWConnection.State) {
@@ -305,6 +307,8 @@ open class NWWebSocket: WebSocketConnection {
                             }
                          }))
     }
+
+    // MARK: Connection cleanup
 
     /// Tear down the `connection`.
     ///
