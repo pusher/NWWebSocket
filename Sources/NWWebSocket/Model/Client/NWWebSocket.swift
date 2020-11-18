@@ -67,7 +67,6 @@ open class NWWebSocket: WebSocketConnection {
             listen()
             connection?.start(queue: connectionQueue)
         }
-        listen()
     }
 
     open func send(string: String) {
