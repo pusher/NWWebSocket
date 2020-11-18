@@ -21,7 +21,6 @@ open class NWWebSocket: WebSocketConnection {
     private let parameters: NWParameters
     private let connectionQueue: DispatchQueue
     private var pingTimer: Timer?
-    private var intentionalDisconnect: Bool = false
 
     // MARK: - Initialization
 
@@ -141,7 +140,7 @@ open class NWWebSocket: WebSocketConnection {
     }
 
     open func disconnect(closeCode: NWProtocolWebSocket.CloseCode = .protocolCode(.normalClosure)) {
-        intentionalDisconnect = true
+        connection?.intentionalDisconnection = true
 
         // Call `cancel()` directly for a `normalClosure`
         // (Otherwise send the custom closeCode as a message).
@@ -271,7 +270,7 @@ open class NWWebSocket: WebSocketConnection {
     private func shouldReportNWError(_ error: NWError) -> Bool {
         if case let .posix(code) = error,
            code == .ENOTCONN || code == .ECANCELED,
-           intentionalDisconnect {
+           (connection?.intentionalDisconnection ?? false) {
             return false
         } else {
             return true
