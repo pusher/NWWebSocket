@@ -220,6 +220,7 @@ open class NWWebSocket: WebSocketConnection {
 
             switch state {
             case .ready:
+                self.connection?.cancel()
                 migratedConnection.stateUpdateHandler = self.stateDidChange(to:)
                 migratedConnection.betterPathUpdateHandler = self.betterPath(isAvailable:)
                 migratedConnection.viabilityUpdateHandler = self.viabilityDidChange(isViable:)
