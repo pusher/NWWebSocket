@@ -127,11 +127,11 @@ open class NWWebSocket: WebSocketConnection {
                 return
             }
 
-            self.delegate?.webSocketDidReceivePong(connection: self)
-
             if let error = error {
                 self.delegate?.webSocketDidReceiveError(connection: self,
                                                         error: error)
+            } else {
+                self.delegate?.webSocketDidReceivePong(connection: self)
             }
         }
         let context = NWConnection.ContentContext(identifier: "pingContext",
