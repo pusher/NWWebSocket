@@ -174,9 +174,7 @@ open class NWWebSocket: WebSocketConnection {
             delegate?.webSocketDidReceiveError(connection: self, error: error)
         case .failed(let error):
             stopConnection(error: error)
-        case .setup:
-            break
-        case .preparing:
+        case .setup, .preparing:
             break
         case .cancelled:
             stopConnection(error: nil)
