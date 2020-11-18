@@ -61,11 +61,13 @@ open class NWWebSocket: WebSocketConnection {
     open func connect() {
         if connection == nil {
             connection = NWConnection(to: endpoint, using: parameters)
+            connection?.stateUpdateHandler = stateDidChange(to:)
+            connection?.betterPathUpdateHandler = betterPath(isAvailable:)
+            connection?.viabilityUpdateHandler = viabilityDidChange(isViable:)
+            listen()
+            connection?.start(queue: connectionQueue)
         }
-        intentionalDisconnect = false
-        connection?.stateUpdateHandler = stateDidChange(to:)
         listen()
-        connection?.start(queue: connectionQueue)
     }
 
     open func send(string: String) {
