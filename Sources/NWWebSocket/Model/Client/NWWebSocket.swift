@@ -172,11 +172,11 @@ open class NWWebSocket: WebSocketConnection {
         case .waiting(let error):
             reportErrorOrDisconnection(error)
         case .failed(let error):
-            stopConnection(error: error)
+            tearDownConnection(error: error)
         case .setup, .preparing:
             break
         case .cancelled:
-            stopConnection(error: nil)
+            tearDownConnection(error: nil)
         @unknown default:
             fatalError()
         }
@@ -312,7 +312,7 @@ open class NWWebSocket: WebSocketConnection {
     /// This method should only be called in response to a `connection` which has entered either
     /// a `cancelled` or `failed` state within the `stateUpdateHandler` closure.
     /// - Parameter error: error description
-    private func stopConnection(error: NWError?) {
+    private func tearDownConnection(error: NWError?) {
         if let error = error, shouldReportNWError(error) {
             delegate?.webSocketDidReceiveError(connection: self, error: error)
         }
