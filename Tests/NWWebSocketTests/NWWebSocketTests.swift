@@ -135,6 +135,16 @@ extension NWWebSocketTests: WebSocketConnectionDelegate {
         Self.disconnectExpectation.fulfill()
     }
 
+    func webSocketViabilityDidChange(connection: WebSocketConnection, isViable: Bool) {
+        if isViable == false {
+            XCTFail("WebSocket should not become unviable during testing.")
+        }
+    }
+
+    func webSocketDidAttemptBetterPathMigration(result: Result<WebSocketConnection, NWError>) {
+        XCTFail("WebSocket should not attempt to migrate to a better path during testing.")
+    }
+
     func webSocketDidReceiveError(connection: WebSocketConnection, error: NWError) {
         Self.errorExpectation?.fulfill()
     }

@@ -188,13 +188,12 @@ open class NWWebSocket: WebSocketConnection {
     /// - Parameter isAvailable: `true` if a better network path is available.
     private func betterPath(isAvailable: Bool) {
         if isAvailable {
-            migrateConnection { result in
-                switch result {
-                case .success():
-                    print("CONNECTION MIGRATION SUCCEEDED")
-                case .failure(let error):
-                    print("CONNECTION MIGRATION FAILED: \(error.debugDescription)")
+            migrateConnection { [weak self] result in
+                guard let self = self else {
+                    return
                 }
+
+                self.delegate?.webSocketDidAttemptBetterPathMigration(result: result)
             }
         }
     }
@@ -202,7 +201,7 @@ open class NWWebSocket: WebSocketConnection {
     /// The handler for informing the `delegate` if the network connection viability has changed.
     /// - Parameter isViable: `true` if the network connection is viable.
     private func viabilityDidChange(isViable: Bool) {
-        print("CONNECTION VIABLE?: \(isViable)")
+        delegate?.webSocketViabilityDidChange(connection: self, isViable: isViable)
     }
 
     /// Attempts to migrate the active `connection` to a new one.
