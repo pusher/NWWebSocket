@@ -208,9 +208,9 @@ open class NWWebSocket: WebSocketConnection {
     /// Attempts to migrate the active `connection` to a new one.
     ///
     /// Migrating can be useful if the active `connection` detects that a better network path has become available.
-    /// - Parameter completionHandler: Returns a `Result` indicating if the migration was successful or a `NWError` if
-    /// the migration failed for some reason.
-    private func migrateConnection(completionHandler: @escaping (Result<Void, NWError>) -> Void) {
+    /// - Parameter completionHandler: Returns a `Result`with the new connection if the migration was successful
+    /// or a `NWError` if the migration failed for some reason.
+    private func migrateConnection(completionHandler: @escaping (Result<WebSocketConnection, NWError>) -> Void) {
 
         let migratedConnection = NWConnection(to: endpoint, using: parameters)
         migratedConnection.stateUpdateHandler = { [weak self] state in
@@ -226,7 +226,7 @@ open class NWWebSocket: WebSocketConnection {
                 migratedConnection.viabilityUpdateHandler = self.viabilityDidChange(isViable:)
                 self.connection = migratedConnection
                 self.listen()
-                completionHandler(.success(()))
+                completionHandler(.success(self))
             case .waiting(let error):
                 completionHandler(.failure(error))
             case .failed(let error):
