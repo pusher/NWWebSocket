@@ -100,8 +100,7 @@ open class NWWebSocket: WebSocketConnection {
 
             if let error = error {
                 if self.shouldReportNWError(error) {
-                    self.delegate?.webSocketDidReceiveError(connection: self,
-                                                            error: error)
+                    self.reportErrorOrDisconnection(error)
                 }
             } else {
                 self.listen()
@@ -128,8 +127,7 @@ open class NWWebSocket: WebSocketConnection {
             }
 
             if let error = error {
-                self.delegate?.webSocketDidReceiveError(connection: self,
-                                                        error: error)
+                self.reportErrorOrDisconnection(error)
             } else {
                 self.delegate?.webSocketDidReceivePong(connection: self)
             }
@@ -172,7 +170,7 @@ open class NWWebSocket: WebSocketConnection {
         case .ready:
             delegate?.webSocketDidConnect(connection: self)
         case .waiting(let error):
-            delegate?.webSocketDidReceiveError(connection: self, error: error)
+            reportErrorOrDisconnection(error)
         case .failed(let error):
             stopConnection(error: error)
         case .setup, .preparing:
@@ -302,7 +300,7 @@ open class NWWebSocket: WebSocketConnection {
                             }
 
                             if let error = error {
-                                self.delegate?.webSocketDidReceiveError(connection: self, error: error)
+                                self.reportErrorOrDisconnection(error)
                             }
                          }))
     }
@@ -322,6 +320,22 @@ open class NWWebSocket: WebSocketConnection {
         connection = nil
     }
 
+    /// Reports the `error` to the `delegate` (if appropriate) and if it represents an unexpected
+    /// disconnection event, the disconnection will also be reported.
+    /// - Parameter error: The `NWError` to inspect.
+    private func reportErrorOrDisconnection(_ error: NWError) {
+        if shouldReportNWError(error) {
+            delegate?.webSocketDidReceiveError(connection: self, error: error)
+        }
+
+        if isDisconnectionNWError(error) {
+            let reasonData = "The websocket disconnected unexpectedly".data(using: .utf8)
+            delegate?.webSocketDidDisconnect(connection: self,
+                                             closeCode: .protocolCode(.goingAway),
+                                             reason: reasonData)
+        }
+    }
+
     /// Determine if a Network error should be reported.
     ///
     /// POSIX errors of either `ENOTCONN` ("Socket is not connected") or
@@ -338,5 +352,21 @@ open class NWWebSocket: WebSocketConnection {
             return true
         }
     }
+
+    /// Determine if a Network error represents an unexpected disconnection event.
+        /// - Parameter error: The `NWError` to inspect.
+        /// - Returns: `true` if the error represents an unexpected disconnection event.
+        private func isDisconnectionNWError(_ error: NWError) -> Bool {
+            if case let .posix(code) = error,
+               code == .ETIMEDOUT
+                || code == .ENOTCONN
+                || code == .ECANCELED
+                || code == .ENETDOWN
+                || code == .ECONNABORTED {
+                return true
+            } else {
+                return false
+            }
+        }
 }
 
