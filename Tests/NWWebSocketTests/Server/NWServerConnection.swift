@@ -57,7 +57,7 @@ internal class NWServerConnection {
             //
             break
         case .ping:
-            //
+            pong()
             break
         case .pong:
             //
@@ -119,6 +119,13 @@ internal class NWServerConnection {
         }
     }
 
+    private func pong() {
+        let metaData = NWProtocolWebSocket.Metadata(opcode: .pong)
+        let context = NWConnection.ContentContext(identifier: "pongContext",
+                                                  metadata: [metaData])
+        self.send(data: Data(), context: context)
+    }
+
     private func send(data: Data?, context: NWConnection.ContentContext) {
         self.connection.send(content: data,
                              contentContext: context,
@@ -133,7 +140,7 @@ internal class NWServerConnection {
     }
 
     private func connectionDidReceiveError(_ error: NWError) {
-        print("connection did receive error: \(error.localizedDescription)")
+        print("connection did receive error: \(error.debugDescription)")
     }
 
     private func stopConnection(error: Error?) {

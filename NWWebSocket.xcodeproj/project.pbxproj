@@ -5,10 +5,10 @@
    objects = {
       "NWWebSocket::NWWebSocket" = {
          isa = "PBXNativeTarget";
-         buildConfigurationList = "OBJ_29";
+         buildConfigurationList = "OBJ_31";
          buildPhases = (
-            "OBJ_32",
-            "OBJ_35"
+            "OBJ_34",
+            "OBJ_38"
          );
          dependencies = (
          );
@@ -24,24 +24,24 @@
       };
       "NWWebSocket::NWWebSocketPackageTests::ProductTarget" = {
          isa = "PBXAggregateTarget";
-         buildConfigurationList = "OBJ_43";
+         buildConfigurationList = "OBJ_46";
          buildPhases = (
          );
          dependencies = (
-            "OBJ_46"
+            "OBJ_49"
          );
          name = "NWWebSocketPackageTests";
          productName = "NWWebSocketPackageTests";
       };
       "NWWebSocket::NWWebSocketTests" = {
          isa = "PBXNativeTarget";
-         buildConfigurationList = "OBJ_48";
+         buildConfigurationList = "OBJ_51";
          buildPhases = (
-            "OBJ_51",
-            "OBJ_56"
+            "OBJ_54",
+            "OBJ_59"
          );
          dependencies = (
-            "OBJ_58"
+            "OBJ_61"
          );
          name = "NWWebSocketTests";
          productName = "NWWebSocketTests";
@@ -55,9 +55,9 @@
       };
       "NWWebSocket::SwiftPMPackageDescription" = {
          isa = "PBXNativeTarget";
-         buildConfigurationList = "OBJ_37";
+         buildConfigurationList = "OBJ_40";
          buildPhases = (
-            "OBJ_40"
+            "OBJ_43"
          );
          dependencies = (
          );
@@ -79,7 +79,7 @@
             "en"
          );
          mainGroup = "OBJ_5";
-         productRefGroup = "OBJ_21";
+         productRefGroup = "OBJ_23";
          projectDirPath = ".";
          targets = (
             "NWWebSocket::NWWebSocket",
@@ -89,17 +89,17 @@
          );
       };
       "OBJ_10" = {
-         isa = "PBXGroup";
-         children = (
-            "OBJ_11"
-         );
-         name = "Client";
-         path = "Client";
+         isa = "PBXFileReference";
+         path = "NWConnection+Extension.swift";
          sourceTree = "<group>";
       };
       "OBJ_11" = {
-         isa = "PBXFileReference";
-         path = "NWWebSocket.swift";
+         isa = "PBXGroup";
+         children = (
+            "OBJ_12"
+         );
+         name = "Model";
+         path = "Model";
          sourceTree = "<group>";
       };
       "OBJ_12" = {
@@ -107,13 +107,13 @@
          children = (
             "OBJ_13"
          );
-         name = "Protocol";
-         path = "Protocol";
+         name = "Client";
+         path = "Client";
          sourceTree = "<group>";
       };
       "OBJ_13" = {
          isa = "PBXFileReference";
-         path = "WebSocketConnection.swift";
+         path = "NWWebSocket.swift";
          sourceTree = "<group>";
       };
       "OBJ_14" = {
@@ -121,44 +121,48 @@
          children = (
             "OBJ_15"
          );
+         name = "Protocol";
+         path = "Protocol";
+         sourceTree = "<group>";
+      };
+      "OBJ_15" = {
+         isa = "PBXFileReference";
+         path = "WebSocketConnection.swift";
+         sourceTree = "<group>";
+      };
+      "OBJ_16" = {
+         isa = "PBXGroup";
+         children = (
+            "OBJ_17"
+         );
          name = "Tests";
          path = "";
          sourceTree = "SOURCE_ROOT";
-      };
-      "OBJ_15" = {
-         isa = "PBXGroup";
-         children = (
-            "OBJ_16",
-            "OBJ_17",
-            "OBJ_20"
-         );
-         name = "NWWebSocketTests";
-         path = "Tests/NWWebSocketTests";
-         sourceTree = "SOURCE_ROOT";
-      };
-      "OBJ_16" = {
-         isa = "PBXFileReference";
-         path = "NWWebSocketTests.swift";
-         sourceTree = "<group>";
       };
       "OBJ_17" = {
          isa = "PBXGroup";
          children = (
             "OBJ_18",
-            "OBJ_19"
+            "OBJ_19",
+            "OBJ_22"
          );
-         name = "Server";
-         path = "Server";
-         sourceTree = "<group>";
+         name = "NWWebSocketTests";
+         path = "Tests/NWWebSocketTests";
+         sourceTree = "SOURCE_ROOT";
       };
       "OBJ_18" = {
          isa = "PBXFileReference";
-         path = "NWServerConnection.swift";
+         path = "NWWebSocketTests.swift";
          sourceTree = "<group>";
       };
       "OBJ_19" = {
-         isa = "PBXFileReference";
-         path = "NWWebSocketServer.swift";
+         isa = "PBXGroup";
+         children = (
+            "OBJ_20",
+            "OBJ_21"
+         );
+         name = "Server";
+         path = "Server";
          sourceTree = "<group>";
       };
       "OBJ_2" = {
@@ -172,10 +176,20 @@
       };
       "OBJ_20" = {
          isa = "PBXFileReference";
-         path = "XCTestManifests.swift";
+         path = "NWServerConnection.swift";
          sourceTree = "<group>";
       };
       "OBJ_21" = {
+         isa = "PBXFileReference";
+         path = "NWWebSocketServer.swift";
+         sourceTree = "<group>";
+      };
+      "OBJ_22" = {
+         isa = "PBXFileReference";
+         path = "XCTestManifests.swift";
+         sourceTree = "<group>";
+      };
+      "OBJ_23" = {
          isa = "PBXGroup";
          children = (
             "NWWebSocket::NWWebSocket::Product",
@@ -185,34 +199,25 @@
          path = "";
          sourceTree = "BUILT_PRODUCTS_DIR";
       };
-      "OBJ_24" = {
+      "OBJ_26" = {
          isa = "PBXFileReference";
          path = "NWWebSocket.podspec";
          sourceTree = "<group>";
       };
-      "OBJ_25" = {
+      "OBJ_27" = {
          isa = "PBXFileReference";
          path = "LICENSE.md";
          sourceTree = "<group>";
       };
-      "OBJ_26" = {
+      "OBJ_28" = {
          isa = "PBXFileReference";
          path = "CHANGELOG.md";
          sourceTree = "<group>";
       };
-      "OBJ_27" = {
+      "OBJ_29" = {
          isa = "PBXFileReference";
          path = "README.md";
          sourceTree = "<group>";
-      };
-      "OBJ_29" = {
-         isa = "XCConfigurationList";
-         buildConfigurations = (
-            "OBJ_30",
-            "OBJ_31"
-         );
-         defaultConfigurationIsVisible = "0";
-         defaultConfigurationName = "Release";
       };
       "OBJ_3" = {
          isa = "XCBuildConfiguration";
@@ -256,152 +261,121 @@
          };
          name = "Debug";
       };
-      "OBJ_30" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            ENABLE_TESTABILITY = "YES";
-            FRAMEWORK_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
-            );
-            HEADER_SEARCH_PATHS = (
-               "$(inherited)"
-            );
-            INFOPLIST_FILE = "NWWebSocket.xcodeproj/NWWebSocket_Info.plist";
-            IPHONEOS_DEPLOYMENT_TARGET = "13.0";
-            LD_RUNPATH_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
-            );
-            MACOSX_DEPLOYMENT_TARGET = "10.15";
-            OTHER_CFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_LDFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_SWIFT_FLAGS = (
-               "$(inherited)"
-            );
-            PRODUCT_BUNDLE_IDENTIFIER = "NWWebSocket";
-            PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
-            PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-            SKIP_INSTALL = "YES";
-            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-               "$(inherited)"
-            );
-            SWIFT_VERSION = "5.0";
-            TARGET_NAME = "NWWebSocket";
-            TVOS_DEPLOYMENT_TARGET = "13.0";
-            WATCHOS_DEPLOYMENT_TARGET = "6.0";
-         };
-         name = "Debug";
-      };
       "OBJ_31" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            ENABLE_TESTABILITY = "YES";
-            FRAMEWORK_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
-            );
-            HEADER_SEARCH_PATHS = (
-               "$(inherited)"
-            );
-            INFOPLIST_FILE = "NWWebSocket.xcodeproj/NWWebSocket_Info.plist";
-            IPHONEOS_DEPLOYMENT_TARGET = "13.0";
-            LD_RUNPATH_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
-            );
-            MACOSX_DEPLOYMENT_TARGET = "10.15";
-            OTHER_CFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_LDFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_SWIFT_FLAGS = (
-               "$(inherited)"
-            );
-            PRODUCT_BUNDLE_IDENTIFIER = "NWWebSocket";
-            PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
-            PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-            SKIP_INSTALL = "YES";
-            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-               "$(inherited)"
-            );
-            SWIFT_VERSION = "5.0";
-            TARGET_NAME = "NWWebSocket";
-            TVOS_DEPLOYMENT_TARGET = "13.0";
-            WATCHOS_DEPLOYMENT_TARGET = "6.0";
-         };
-         name = "Release";
-      };
-      "OBJ_32" = {
-         isa = "PBXSourcesBuildPhase";
-         files = (
-            "OBJ_33",
-            "OBJ_34"
-         );
-      };
-      "OBJ_33" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_11";
-      };
-      "OBJ_34" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_13";
-      };
-      "OBJ_35" = {
-         isa = "PBXFrameworksBuildPhase";
-         files = (
-         );
-      };
-      "OBJ_37" = {
          isa = "XCConfigurationList";
          buildConfigurations = (
-            "OBJ_38",
-            "OBJ_39"
+            "OBJ_32",
+            "OBJ_33"
          );
          defaultConfigurationIsVisible = "0";
          defaultConfigurationName = "Release";
       };
-      "OBJ_38" = {
+      "OBJ_32" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
-            LD = "/usr/bin/true";
+            ENABLE_TESTABILITY = "YES";
+            FRAMEWORK_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
+            );
+            HEADER_SEARCH_PATHS = (
+               "$(inherited)"
+            );
+            INFOPLIST_FILE = "NWWebSocket.xcodeproj/NWWebSocket_Info.plist";
+            IPHONEOS_DEPLOYMENT_TARGET = "13.0";
+            LD_RUNPATH_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
+            );
+            MACOSX_DEPLOYMENT_TARGET = "10.15";
+            OTHER_CFLAGS = (
+               "$(inherited)"
+            );
+            OTHER_LDFLAGS = (
+               "$(inherited)"
+            );
             OTHER_SWIFT_FLAGS = (
-               "-swift-version",
-               "5",
-               "-I",
-               "$(TOOLCHAIN_DIR)/usr/lib/swift/pm/4_2",
-               "-sdk",
-               "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk",
-               "-package-description-version",
-               "5.1.0"
+               "$(inherited)"
+            );
+            PRODUCT_BUNDLE_IDENTIFIER = "NWWebSocket";
+            PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+            PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+            SKIP_INSTALL = "YES";
+            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+               "$(inherited)"
             );
             SWIFT_VERSION = "5.0";
+            TARGET_NAME = "NWWebSocket";
+            TVOS_DEPLOYMENT_TARGET = "13.0";
+            WATCHOS_DEPLOYMENT_TARGET = "6.0";
          };
          name = "Debug";
       };
-      "OBJ_39" = {
+      "OBJ_33" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
-            LD = "/usr/bin/true";
+            ENABLE_TESTABILITY = "YES";
+            FRAMEWORK_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
+            );
+            HEADER_SEARCH_PATHS = (
+               "$(inherited)"
+            );
+            INFOPLIST_FILE = "NWWebSocket.xcodeproj/NWWebSocket_Info.plist";
+            IPHONEOS_DEPLOYMENT_TARGET = "13.0";
+            LD_RUNPATH_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(TOOLCHAIN_DIR)/usr/lib/swift/macosx"
+            );
+            MACOSX_DEPLOYMENT_TARGET = "10.15";
+            OTHER_CFLAGS = (
+               "$(inherited)"
+            );
+            OTHER_LDFLAGS = (
+               "$(inherited)"
+            );
             OTHER_SWIFT_FLAGS = (
-               "-swift-version",
-               "5",
-               "-I",
-               "$(TOOLCHAIN_DIR)/usr/lib/swift/pm/4_2",
-               "-sdk",
-               "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk",
-               "-package-description-version",
-               "5.1.0"
+               "$(inherited)"
+            );
+            PRODUCT_BUNDLE_IDENTIFIER = "NWWebSocket";
+            PRODUCT_MODULE_NAME = "$(TARGET_NAME:c99extidentifier)";
+            PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+            SKIP_INSTALL = "YES";
+            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+               "$(inherited)"
             );
             SWIFT_VERSION = "5.0";
+            TARGET_NAME = "NWWebSocket";
+            TVOS_DEPLOYMENT_TARGET = "13.0";
+            WATCHOS_DEPLOYMENT_TARGET = "6.0";
          };
          name = "Release";
+      };
+      "OBJ_34" = {
+         isa = "PBXSourcesBuildPhase";
+         files = (
+            "OBJ_35",
+            "OBJ_36",
+            "OBJ_37"
+         );
+      };
+      "OBJ_35" = {
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_10";
+      };
+      "OBJ_36" = {
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_13";
+      };
+      "OBJ_37" = {
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_15";
+      };
+      "OBJ_38" = {
+         isa = "PBXFrameworksBuildPhase";
+         files = (
+         );
       };
       "OBJ_4" = {
          isa = "XCBuildConfiguration";
@@ -442,104 +416,149 @@
          name = "Release";
       };
       "OBJ_40" = {
-         isa = "PBXSourcesBuildPhase";
-         files = (
-            "OBJ_41"
-         );
-      };
-      "OBJ_41" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_6";
-      };
-      "OBJ_43" = {
          isa = "XCConfigurationList";
          buildConfigurations = (
-            "OBJ_44",
-            "OBJ_45"
+            "OBJ_41",
+            "OBJ_42"
          );
          defaultConfigurationIsVisible = "0";
          defaultConfigurationName = "Release";
       };
+      "OBJ_41" = {
+         isa = "XCBuildConfiguration";
+         buildSettings = {
+            LD = "/usr/bin/true";
+            OTHER_SWIFT_FLAGS = (
+               "-swift-version",
+               "5",
+               "-I",
+               "$(TOOLCHAIN_DIR)/usr/lib/swift/pm/4_2",
+               "-sdk",
+               "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk",
+               "-package-description-version",
+               "5.1.0"
+            );
+            SWIFT_VERSION = "5.0";
+         };
+         name = "Debug";
+      };
+      "OBJ_42" = {
+         isa = "XCBuildConfiguration";
+         buildSettings = {
+            LD = "/usr/bin/true";
+            OTHER_SWIFT_FLAGS = (
+               "-swift-version",
+               "5",
+               "-I",
+               "$(TOOLCHAIN_DIR)/usr/lib/swift/pm/4_2",
+               "-sdk",
+               "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.0.sdk",
+               "-package-description-version",
+               "5.1.0"
+            );
+            SWIFT_VERSION = "5.0";
+         };
+         name = "Release";
+      };
+      "OBJ_43" = {
+         isa = "PBXSourcesBuildPhase";
+         files = (
+            "OBJ_44"
+         );
+      };
       "OBJ_44" = {
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_6";
+      };
+      "OBJ_46" = {
+         isa = "XCConfigurationList";
+         buildConfigurations = (
+            "OBJ_47",
+            "OBJ_48"
+         );
+         defaultConfigurationIsVisible = "0";
+         defaultConfigurationName = "Release";
+      };
+      "OBJ_47" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
          };
          name = "Debug";
       };
-      "OBJ_45" = {
+      "OBJ_48" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
          };
          name = "Release";
       };
-      "OBJ_46" = {
+      "OBJ_49" = {
          isa = "PBXTargetDependency";
          target = "NWWebSocket::NWWebSocketTests";
-      };
-      "OBJ_48" = {
-         isa = "XCConfigurationList";
-         buildConfigurations = (
-            "OBJ_49",
-            "OBJ_50"
-         );
-         defaultConfigurationIsVisible = "0";
-         defaultConfigurationName = "Release";
-      };
-      "OBJ_49" = {
-         isa = "XCBuildConfiguration";
-         buildSettings = {
-            CLANG_ENABLE_MODULES = "YES";
-            EMBEDDED_CONTENT_CONTAINS_SWIFT = "YES";
-            FRAMEWORK_SEARCH_PATHS = (
-               "$(inherited)",
-               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
-            );
-            HEADER_SEARCH_PATHS = (
-               "$(inherited)"
-            );
-            INFOPLIST_FILE = "NWWebSocket.xcodeproj/NWWebSocketTests_Info.plist";
-            IPHONEOS_DEPLOYMENT_TARGET = "14.0";
-            LD_RUNPATH_SEARCH_PATHS = (
-               "$(inherited)",
-               "@loader_path/../Frameworks",
-               "@loader_path/Frameworks"
-            );
-            MACOSX_DEPLOYMENT_TARGET = "10.15";
-            OTHER_CFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_LDFLAGS = (
-               "$(inherited)"
-            );
-            OTHER_SWIFT_FLAGS = (
-               "$(inherited)"
-            );
-            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
-               "$(inherited)"
-            );
-            SWIFT_VERSION = "5.0";
-            TARGET_NAME = "NWWebSocketTests";
-            TVOS_DEPLOYMENT_TARGET = "13.0";
-            WATCHOS_DEPLOYMENT_TARGET = "6.0";
-         };
-         name = "Debug";
       };
       "OBJ_5" = {
          isa = "PBXGroup";
          children = (
             "OBJ_6",
             "OBJ_7",
-            "OBJ_14",
-            "OBJ_21",
-            "OBJ_24",
-            "OBJ_25",
+            "OBJ_16",
+            "OBJ_23",
             "OBJ_26",
-            "OBJ_27"
+            "OBJ_27",
+            "OBJ_28",
+            "OBJ_29"
          );
          path = "";
          sourceTree = "<group>";
       };
-      "OBJ_50" = {
+      "OBJ_51" = {
+         isa = "XCConfigurationList";
+         buildConfigurations = (
+            "OBJ_52",
+            "OBJ_53"
+         );
+         defaultConfigurationIsVisible = "0";
+         defaultConfigurationName = "Release";
+      };
+      "OBJ_52" = {
+         isa = "XCBuildConfiguration";
+         buildSettings = {
+            CLANG_ENABLE_MODULES = "YES";
+            EMBEDDED_CONTENT_CONTAINS_SWIFT = "YES";
+            FRAMEWORK_SEARCH_PATHS = (
+               "$(inherited)",
+               "$(PLATFORM_DIR)/Developer/Library/Frameworks"
+            );
+            HEADER_SEARCH_PATHS = (
+               "$(inherited)"
+            );
+            INFOPLIST_FILE = "NWWebSocket.xcodeproj/NWWebSocketTests_Info.plist";
+            IPHONEOS_DEPLOYMENT_TARGET = "14.0";
+            LD_RUNPATH_SEARCH_PATHS = (
+               "$(inherited)",
+               "@loader_path/../Frameworks",
+               "@loader_path/Frameworks"
+            );
+            MACOSX_DEPLOYMENT_TARGET = "10.15";
+            OTHER_CFLAGS = (
+               "$(inherited)"
+            );
+            OTHER_LDFLAGS = (
+               "$(inherited)"
+            );
+            OTHER_SWIFT_FLAGS = (
+               "$(inherited)"
+            );
+            SWIFT_ACTIVE_COMPILATION_CONDITIONS = (
+               "$(inherited)"
+            );
+            SWIFT_VERSION = "5.0";
+            TARGET_NAME = "NWWebSocketTests";
+            TVOS_DEPLOYMENT_TARGET = "13.0";
+            WATCHOS_DEPLOYMENT_TARGET = "6.0";
+         };
+         name = "Debug";
+      };
+      "OBJ_53" = {
          isa = "XCBuildConfiguration";
          buildSettings = {
             CLANG_ENABLE_MODULES = "YES";
@@ -578,50 +597,50 @@
          };
          name = "Release";
       };
-      "OBJ_51" = {
+      "OBJ_54" = {
          isa = "PBXSourcesBuildPhase";
          files = (
-            "OBJ_52",
-            "OBJ_53",
-            "OBJ_54",
-            "OBJ_55"
+            "OBJ_55",
+            "OBJ_56",
+            "OBJ_57",
+            "OBJ_58"
          );
-      };
-      "OBJ_52" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_16";
-      };
-      "OBJ_53" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_18";
-      };
-      "OBJ_54" = {
-         isa = "PBXBuildFile";
-         fileRef = "OBJ_19";
       };
       "OBJ_55" = {
          isa = "PBXBuildFile";
-         fileRef = "OBJ_20";
+         fileRef = "OBJ_18";
       };
       "OBJ_56" = {
-         isa = "PBXFrameworksBuildPhase";
-         files = (
-            "OBJ_57"
-         );
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_20";
       };
       "OBJ_57" = {
          isa = "PBXBuildFile";
-         fileRef = "NWWebSocket::NWWebSocket::Product";
+         fileRef = "OBJ_21";
       };
       "OBJ_58" = {
-         isa = "PBXTargetDependency";
-         target = "NWWebSocket::NWWebSocket";
+         isa = "PBXBuildFile";
+         fileRef = "OBJ_22";
+      };
+      "OBJ_59" = {
+         isa = "PBXFrameworksBuildPhase";
+         files = (
+            "OBJ_60"
+         );
       };
       "OBJ_6" = {
          isa = "PBXFileReference";
          explicitFileType = "sourcecode.swift";
          path = "Package.swift";
          sourceTree = "<group>";
+      };
+      "OBJ_60" = {
+         isa = "PBXBuildFile";
+         fileRef = "NWWebSocket::NWWebSocket::Product";
+      };
+      "OBJ_61" = {
+         isa = "PBXTargetDependency";
+         target = "NWWebSocket::NWWebSocket";
       };
       "OBJ_7" = {
          isa = "PBXGroup";
@@ -636,7 +655,8 @@
          isa = "PBXGroup";
          children = (
             "OBJ_9",
-            "OBJ_12"
+            "OBJ_11",
+            "OBJ_14"
          );
          name = "NWWebSocket";
          path = "Sources/NWWebSocket";
@@ -647,8 +667,8 @@
          children = (
             "OBJ_10"
          );
-         name = "Model";
-         path = "Model";
+         name = "Extension";
+         path = "Extension";
          sourceTree = "<group>";
       };
    };

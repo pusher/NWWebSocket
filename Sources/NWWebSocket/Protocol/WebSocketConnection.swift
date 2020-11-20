@@ -46,6 +46,24 @@ public protocol WebSocketConnectionDelegate: AnyObject {
                                 closeCode: NWProtocolWebSocket.CloseCode,
                                 reason: Data?)
 
+    /// Tells the delegate that the WebSocket connection viability has changed.
+    ///
+    /// An example scenario of when this method would be called is a Wi-Fi connection being lost due to a device
+    /// moving out of signal range, and then the method would be called again once the device moved back in range.
+    /// - Parameters:
+    ///   - connection: The `WebSocketConnection` whose viability has changed.
+    ///   - isViable: A `Bool` indicating if the connection is viable or not.
+    func webSocketViabilityDidChange(connection: WebSocketConnection,
+                                     isViable: Bool)
+
+    /// Tells the delegate that the WebSocket has attempted a migration based on a better network path becoming available.
+    ///
+    /// An example of when this method would be called is if a device is using a cellular connection, and a Wi-Fi connection
+    /// becomes available. This method will also be called if a device loses a Wi-Fi connection, and a cellular connection is available.
+    /// - Parameter result: A `Result` containing the `WebSocketConnection` if the migration was successful, or a
+    /// `NWError` if the migration failed for some reason.
+    func webSocketDidAttemptBetterPathMigration(result: Result<WebSocketConnection, NWError>)
+
     /// Tells the delegate that the WebSocket received an error.
     ///
     /// An error received by a WebSocket is not necessarily fatal.

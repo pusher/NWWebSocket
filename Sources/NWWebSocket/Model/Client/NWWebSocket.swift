@@ -21,7 +21,6 @@ open class NWWebSocket: WebSocketConnection {
     private let parameters: NWParameters
     private let connectionQueue: DispatchQueue
     private var pingTimer: Timer?
-    private var intentionalDisconnect: Bool = false
 
     // MARK: - Initialization
 
@@ -62,11 +61,12 @@ open class NWWebSocket: WebSocketConnection {
     open func connect() {
         if connection == nil {
             connection = NWConnection(to: endpoint, using: parameters)
+            connection?.stateUpdateHandler = stateDidChange(to:)
+            connection?.betterPathUpdateHandler = betterPath(isAvailable:)
+            connection?.viabilityUpdateHandler = viabilityDidChange(isViable:)
+            listen()
+            connection?.start(queue: connectionQueue)
         }
-        intentionalDisconnect = false
-        connection?.stateUpdateHandler = stateDidChange(to:)
-        listen()
-        connection?.start(queue: connectionQueue)
     }
 
     open func send(string: String) {
@@ -100,8 +100,7 @@ open class NWWebSocket: WebSocketConnection {
 
             if let error = error {
                 if self.shouldReportNWError(error) {
-                    self.delegate?.webSocketDidReceiveError(connection: self,
-                                                            error: error)
+                    self.reportErrorOrDisconnection(error)
                 }
             } else {
                 self.listen()
@@ -127,21 +126,20 @@ open class NWWebSocket: WebSocketConnection {
                 return
             }
 
-            self.delegate?.webSocketDidReceivePong(connection: self)
-
             if let error = error {
-                self.delegate?.webSocketDidReceiveError(connection: self,
-                                                        error: error)
+                self.reportErrorOrDisconnection(error)
+            } else {
+                self.delegate?.webSocketDidReceivePong(connection: self)
             }
         }
         let context = NWConnection.ContentContext(identifier: "pingContext",
                                                   metadata: [metadata])
 
-        send(data: Data(), context: context)
+        send(data: "ping".data(using: .utf8), context: context)
     }
 
     open func disconnect(closeCode: NWProtocolWebSocket.CloseCode = .protocolCode(.normalClosure)) {
-        intentionalDisconnect = true
+        connection?.intentionalDisconnection = true
 
         // Call `cancel()` directly for a `normalClosure`
         // (Otherwise send the custom closeCode as a message).
@@ -163,6 +161,8 @@ open class NWWebSocket: WebSocketConnection {
 
     // MARK: - Private methods
 
+    // MARK: Connection state changes
+
     /// The handler for managing changes to the `connection.state` via the `stateUpdateHandler` on a `NWConnection`.
     /// - Parameter state: The new `NWConnection.State`
     private func stateDidChange(to state: NWConnection.State) {
@@ -170,19 +170,76 @@ open class NWWebSocket: WebSocketConnection {
         case .ready:
             delegate?.webSocketDidConnect(connection: self)
         case .waiting(let error):
-            delegate?.webSocketDidReceiveError(connection: self, error: error)
+            reportErrorOrDisconnection(error)
         case .failed(let error):
-            stopConnection(error: error)
-        case .setup:
-            break
-        case .preparing:
+            tearDownConnection(error: error)
+        case .setup, .preparing:
             break
         case .cancelled:
-            stopConnection(error: nil)
+            tearDownConnection(error: nil)
         @unknown default:
             fatalError()
         }
     }
+
+    /// The handler for informing the `delegate` if there is a better network path available
+    /// - Parameter isAvailable: `true` if a better network path is available.
+    private func betterPath(isAvailable: Bool) {
+        if isAvailable {
+            migrateConnection { [weak self] result in
+                guard let self = self else {
+                    return
+                }
+
+                self.delegate?.webSocketDidAttemptBetterPathMigration(result: result)
+            }
+        }
+    }
+
+    /// The handler for informing the `delegate` if the network connection viability has changed.
+    /// - Parameter isViable: `true` if the network connection is viable.
+    private func viabilityDidChange(isViable: Bool) {
+        delegate?.webSocketViabilityDidChange(connection: self, isViable: isViable)
+    }
+
+    /// Attempts to migrate the active `connection` to a new one.
+    ///
+    /// Migrating can be useful if the active `connection` detects that a better network path has become available.
+    /// - Parameter completionHandler: Returns a `Result`with the new connection if the migration was successful
+    /// or a `NWError` if the migration failed for some reason.
+    private func migrateConnection(completionHandler: @escaping (Result<WebSocketConnection, NWError>) -> Void) {
+
+        let migratedConnection = NWConnection(to: endpoint, using: parameters)
+        migratedConnection.stateUpdateHandler = { [weak self] state in
+            guard let self = self else {
+                return
+            }
+
+            switch state {
+            case .ready:
+                self.connection = nil
+                migratedConnection.stateUpdateHandler = self.stateDidChange(to:)
+                migratedConnection.betterPathUpdateHandler = self.betterPath(isAvailable:)
+                migratedConnection.viabilityUpdateHandler = self.viabilityDidChange(isViable:)
+                self.connection = migratedConnection
+                self.listen()
+                completionHandler(.success(self))
+            case .waiting(let error):
+                completionHandler(.failure(error))
+            case .failed(let error):
+                completionHandler(.failure(error))
+            case .setup, .preparing:
+                break
+            case .cancelled:
+                completionHandler(.failure(.posix(.ECANCELED)))
+            @unknown default:
+                fatalError()
+            }
+        }
+        migratedConnection.start(queue: connectionQueue)
+    }
+
+    // MARK: Connection data transfer
 
     /// Receive a WebSocket message, and handle it according to it's metadata.
     /// - Parameters:
@@ -243,22 +300,40 @@ open class NWWebSocket: WebSocketConnection {
                             }
 
                             if let error = error {
-                                self.delegate?.webSocketDidReceiveError(connection: self, error: error)
+                                self.reportErrorOrDisconnection(error)
                             }
                          }))
     }
+
+    // MARK: Connection cleanup
 
     /// Tear down the `connection`.
     ///
     /// This method should only be called in response to a `connection` which has entered either
     /// a `cancelled` or `failed` state within the `stateUpdateHandler` closure.
     /// - Parameter error: error description
-    private func stopConnection(error: NWError?) {
+    private func tearDownConnection(error: NWError?) {
         if let error = error, shouldReportNWError(error) {
             delegate?.webSocketDidReceiveError(connection: self, error: error)
         }
         pingTimer?.invalidate()
         connection = nil
+    }
+
+    /// Reports the `error` to the `delegate` (if appropriate) and if it represents an unexpected
+    /// disconnection event, the disconnection will also be reported.
+    /// - Parameter error: The `NWError` to inspect.
+    private func reportErrorOrDisconnection(_ error: NWError) {
+        if shouldReportNWError(error) {
+            delegate?.webSocketDidReceiveError(connection: self, error: error)
+        }
+
+        if isDisconnectionNWError(error) {
+            let reasonData = "The websocket disconnected unexpectedly".data(using: .utf8)
+            delegate?.webSocketDidDisconnect(connection: self,
+                                             closeCode: .protocolCode(.goingAway),
+                                             reason: reasonData)
+        }
     }
 
     /// Determine if a Network error should be reported.
@@ -271,11 +346,27 @@ open class NWWebSocket: WebSocketConnection {
     private func shouldReportNWError(_ error: NWError) -> Bool {
         if case let .posix(code) = error,
            code == .ENOTCONN || code == .ECANCELED,
-           intentionalDisconnect {
+           (connection?.intentionalDisconnection ?? false) {
             return false
         } else {
             return true
         }
     }
+
+    /// Determine if a Network error represents an unexpected disconnection event.
+        /// - Parameter error: The `NWError` to inspect.
+        /// - Returns: `true` if the error represents an unexpected disconnection event.
+        private func isDisconnectionNWError(_ error: NWError) -> Bool {
+            if case let .posix(code) = error,
+               code == .ETIMEDOUT
+                || code == .ENOTCONN
+                || code == .ECANCELED
+                || code == .ENETDOWN
+                || code == .ECONNABORTED {
+                return true
+            } else {
+                return false
+            }
+        }
 }
 
