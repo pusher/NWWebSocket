@@ -21,6 +21,7 @@ open class NWWebSocket: WebSocketConnection {
     private let parameters: NWParameters
     private let connectionQueue: DispatchQueue
     private var pingTimer: Timer?
+    private var disconnectionWorkItem: DispatchWorkItem?
 
     // MARK: - Initialization
 
@@ -143,16 +144,15 @@ open class NWWebSocket: WebSocketConnection {
         // (Otherwise send the custom closeCode as a message).
         if closeCode == .protocolCode(.normalClosure) {
             connection?.cancel()
-            delegate?.webSocketDidDisconnect(connection: self,
-                                             closeCode: closeCode,
-                                             reason: nil)
+            scheduleDisconnectionReporting(closeCode: closeCode,
+                                           reason: nil)
         } else {
             let metadata = NWProtocolWebSocket.Metadata(opcode: .close)
             metadata.closeCode = closeCode
             let context = NWConnection.ContentContext(identifier: "closeContext",
                                                       metadata: [metadata])
 
-            // See implementation of `send(data:context:)` for `delegate?.webSocketDidDisconnect(…)`
+            // See implementation of `send(data:context:)` for `scheduleDisconnection(closeCode:, reason:)`
             send(data: nil, context: context)
         }
     }
@@ -262,9 +262,8 @@ open class NWWebSocket: WebSocketConnection {
             self.delegate?.webSocketDidReceiveMessage(connection: self,
                                                       string: string)
         case .close:
-            delegate?.webSocketDidDisconnect(connection: self,
-                                             closeCode: metadata.closeCode,
-                                             reason: data)
+            scheduleDisconnectionReporting(closeCode: metadata.closeCode,
+                                           reason: data)
         case .ping:
             // SEE `autoReplyPing = true` in `init()`.
             break
@@ -292,9 +291,8 @@ open class NWWebSocket: WebSocketConnection {
                             // If a connection closure was sent, inform delegate on completion
                             if let socketMetadata = context.protocolMetadata.first as? NWProtocolWebSocket.Metadata,
                                socketMetadata.opcode == .close {
-                                self.delegate?.webSocketDidDisconnect(connection: self,
-                                                                      closeCode: socketMetadata.closeCode,
-                                                                      reason: data)
+                                self.scheduleDisconnectionReporting(closeCode: socketMetadata.closeCode,
+                                                                    reason: data)
                             }
 
                             if let error = error {
@@ -304,6 +302,24 @@ open class NWWebSocket: WebSocketConnection {
     }
 
     // MARK: Connection cleanup
+
+    /// Schedules the reporting of a WebSocket disconnection.
+    ///
+    /// The disconnection will be actually reported once the underlying `NWConnection` has been fully torn down.
+    /// - Parameters:
+    ///   - closeCode: A `NWProtocolWebSocket.CloseCode` describing how the connection closed.
+    ///   - reason: Optional extra information explaining the disconnection. (Formatted as UTF-8 encoded `Data`).
+    private func scheduleDisconnectionReporting(closeCode: NWProtocolWebSocket.CloseCode,
+                                                reason: Data?) {
+        // Cancel any existing `disconnectionWorkItem` that was set first
+        disconnectionWorkItem?.cancel()
+
+        disconnectionWorkItem = DispatchWorkItem {
+            self.delegate?.webSocketDidDisconnect(connection: self,
+                                                  closeCode: closeCode,
+                                                  reason: reason)
+        }
+    }
 
     /// Tear down the `connection`.
     ///
@@ -316,6 +332,10 @@ open class NWWebSocket: WebSocketConnection {
         }
         pingTimer?.invalidate()
         connection = nil
+
+        if let disconnectionWorkItem = disconnectionWorkItem {
+            connectionQueue.async(execute: disconnectionWorkItem)
+        }
     }
 
     /// Reports the `error` to the `delegate` (if appropriate) and if it represents an unexpected
@@ -328,9 +348,8 @@ open class NWWebSocket: WebSocketConnection {
 
         if isDisconnectionNWError(error) {
             let reasonData = "The websocket disconnected unexpectedly".data(using: .utf8)
-            delegate?.webSocketDidDisconnect(connection: self,
-                                             closeCode: .protocolCode(.goingAway),
-                                             reason: reasonData)
+            scheduleDisconnectionReporting(closeCode: .protocolCode(.goingAway),
+                                           reason: reasonData)
         }
     }
 
