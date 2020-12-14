@@ -99,9 +99,7 @@ open class NWWebSocket: WebSocketConnection {
             }
 
             if let error = error {
-                if self.shouldReportNWError(error) {
-                    self.reportErrorOrDisconnection(error)
-                }
+                self.reportErrorOrDisconnection(error)
             } else {
                 self.listen()
             }
