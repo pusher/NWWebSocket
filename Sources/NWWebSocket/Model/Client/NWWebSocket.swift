@@ -371,19 +371,19 @@ open class NWWebSocket: WebSocketConnection {
     }
 
     /// Determine if a Network error represents an unexpected disconnection event.
-        /// - Parameter error: The `NWError` to inspect.
-        /// - Returns: `true` if the error represents an unexpected disconnection event.
-        private func isDisconnectionNWError(_ error: NWError) -> Bool {
-            if case let .posix(code) = error,
-               code == .ETIMEDOUT
-                || code == .ENOTCONN
-                || code == .ECANCELED
-                || code == .ENETDOWN
-                || code == .ECONNABORTED {
-                return true
-            } else {
-                return false
-            }
+    /// - Parameter error: The `NWError` to inspect.
+    /// - Returns: `true` if the error represents an unexpected disconnection event.
+    private func isDisconnectionNWError(_ error: NWError) -> Bool {
+        if case let .posix(code) = error,
+           code == .ETIMEDOUT
+            || code == .ENOTCONN
+            || code == .ECANCELED
+            || code == .ENETDOWN
+            || code == .ECONNABORTED {
+            return true
+        } else {
+            return false
         }
+    }
 }
 
