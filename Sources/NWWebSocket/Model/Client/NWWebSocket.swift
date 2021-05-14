@@ -1,12 +1,18 @@
 import Foundation
 import Network
 
+/// A WebSocket client that manages a socket connection.
 open class NWWebSocket: WebSocketConnection {
 
     // MARK: - Public properties
 
+    /// The WebSocket connection delegate.
     public weak var delegate: WebSocketConnectionDelegate?
 
+    /// The default `NWProtocolWebSocket.Options` for a WebSocket connection.
+    ///
+    /// These options specify that the connection automatically replies to Ping messages
+    /// instead of delivering them to the `receiveMessage(data:context:)` method.
     public static var defaultOptions: NWProtocolWebSocket.Options {
         let options = NWProtocolWebSocket.Options()
         options.autoReplyPing = true
@@ -25,6 +31,13 @@ open class NWWebSocket: WebSocketConnection {
 
     // MARK: - Initialization
 
+    /// Creates a `NWWebSocket` instance which connects to a socket `url` with some configuration `options`.
+    /// - Parameters:
+    ///   - request: The `URLRequest` containing the connection endpoint `URL`.
+    ///   - connectAutomatically: Determines if a connection should occur automatically on initialization.
+    ///                           The default value is `false`.
+    ///   - options: The configuration options for the connection. The default value is `NWWebSocket.defaultOptions`.
+    ///   - connectionQueue: A `DispatchQueue` on which to deliver all connection events. The default value is `.main`.
     public convenience init(request: URLRequest,
                             connectAutomatically: Bool = false,
                             options: NWProtocolWebSocket.Options = NWWebSocket.defaultOptions,
@@ -35,6 +48,13 @@ open class NWWebSocket: WebSocketConnection {
                   connectionQueue: connectionQueue)
     }
 
+    /// Creates a `NWWebSocket` instance which connects a socket `url` with some configuration `options`.
+    /// - Parameters:
+    ///   - url: The connection endpoint `URL`.
+    ///   - connectAutomatically: Determines if a connection should occur automatically on initialization.
+    ///                           The default value is `false`.
+    ///   - options: The configuration options for the connection. The default value is `NWWebSocket.defaultOptions`.
+    ///   - connectionQueue: A `DispatchQueue` on which to deliver all connection events. The default value is `.main`.
     public init(url: URL,
                 connectAutomatically: Bool = false,
                 options: NWProtocolWebSocket.Options = NWWebSocket.defaultOptions,
@@ -59,6 +79,7 @@ open class NWWebSocket: WebSocketConnection {
 
     // MARK: - WebSocketConnection conformance
 
+    /// Connect to the WebSocket.
     open func connect() {
         if connection == nil {
             connection = NWConnection(to: endpoint, using: parameters)
@@ -70,6 +91,8 @@ open class NWWebSocket: WebSocketConnection {
         }
     }
 
+    /// Send a UTF-8 formatted `String` over the WebSocket.
+    /// - Parameter string: The `String` that will be sent.
     open func send(string: String) {
         guard let data = string.data(using: .utf8) else {
             return
@@ -81,6 +104,8 @@ open class NWWebSocket: WebSocketConnection {
         send(data: data, context: context)
     }
 
+    /// Send some `Data` over the WebSocket.
+    /// - Parameter data: The `Data` that will be sent.
     open func send(data: Data) {
         let metadata = NWProtocolWebSocket.Metadata(opcode: .binary)
         let context = NWConnection.ContentContext(identifier: "binaryContext",
@@ -89,6 +114,7 @@ open class NWWebSocket: WebSocketConnection {
         send(data: data, context: context)
     }
 
+    /// Start listening for messages over the WebSocket.
     public func listen() {
         connection?.receiveMessage { [weak self] (data, context, _, error) in
             guard let self = self else {
@@ -107,6 +133,8 @@ open class NWWebSocket: WebSocketConnection {
         }
     }
 
+    /// Ping the WebSocket periodically.
+    /// - Parameter interval: The `TimeInterval` (in seconds) with which to ping the server.
     open func ping(interval: TimeInterval) {
         pingTimer = .scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             guard let self = self else {
@@ -118,6 +146,7 @@ open class NWWebSocket: WebSocketConnection {
         pingTimer?.tolerance = 0.01
     }
 
+    /// Ping the WebSocket once.
     open func ping() {
         let metadata = NWProtocolWebSocket.Metadata(opcode: .ping)
         metadata.setPongHandler(connectionQueue) { [weak self] error in
@@ -137,6 +166,8 @@ open class NWWebSocket: WebSocketConnection {
         send(data: "ping".data(using: .utf8), context: context)
     }
 
+    /// Disconnect from the WebSocket.
+    /// - Parameter closeCode: The code to use when closing the WebSocket connection.
     open func disconnect(closeCode: NWProtocolWebSocket.CloseCode = .protocolCode(.normalClosure)) {
         connection?.intentionalDisconnection = true
 

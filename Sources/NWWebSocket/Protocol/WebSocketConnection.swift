@@ -1,37 +1,38 @@
 import Foundation
 import Network
 
-/// Defines a websocket connection.
+/// Defines a WebSocket connection.
 public protocol WebSocketConnection {
-    /// Connect to the websocket.
+    /// Connect to the WebSocket.
     func connect()
 
-    /// Send a UTF-8 formatted `String` over the websocket.
+    /// Send a UTF-8 formatted `String` over the WebSocket.
     /// - Parameter string: The `String` that will be sent.
     func send(string: String)
 
-    /// Send some `Data` over the websocket.
+    /// Send some `Data` over the WebSocket.
     /// - Parameter data: The `Data` that will be sent.
     func send(data: Data)
 
-    /// Start listening for messages over the websocket.
+    /// Start listening for messages over the WebSocket.
     func listen()
 
-    /// Ping the websocket periodically.
+    /// Ping the WebSocket periodically.
     /// - Parameter interval: The `TimeInterval` (in seconds) with which to ping the server.
     func ping(interval: TimeInterval)
 
-    /// Ping the websocket once.
+    /// Ping the WebSocket once.
     func ping()
 
-    /// Disconnect from the websocket.
-    /// - Parameter closeCode: The code to use when closing the websocket connection.
+    /// Disconnect from the WebSocket.
+    /// - Parameter closeCode: The code to use when closing the WebSocket connection.
     func disconnect(closeCode: NWProtocolWebSocket.CloseCode)
 
+    /// The WebSocket connection delegate.
     var delegate: WebSocketConnectionDelegate? { get set }
 }
 
-/// Defines a delegate for a websocket connection.
+/// Defines a delegate for a WebSocket connection.
 public protocol WebSocketConnectionDelegate: AnyObject {
     /// Tells the delegate that the WebSocket did connect successfully.
     /// - Parameter connection: The active `WebSocketConnection`.
