@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>NWWebSocket Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/NWWebSocket" class="dashAnchor"></a>
+    <a title="NWWebSocket Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">NWWebSocket 0.5.2 Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/pusher/NWWebSocket"><img src="../img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="../search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">NWWebSocket Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        NWWebSocket Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/NWWebSocket.html">NWWebSocket</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/WebSocketConnectionDelegate.html">WebSocketConnectionDelegate</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>NWWebSocket</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">NWWebSocket</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></span></code></pre>
+
+                </div>
+              </div>
+            <p>A WebSocket client that manages a socket connection.</p>
+
+              <div class="slightly-smaller">
+                <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Model/Client/NWWebSocket.swift#L5-L419">Show on GitHub</a>
+              </div>
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Public%20properties"></a>
+                <a name="//apple_ref/swift/Section/Public properties" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Public%20properties"></a>
+                  <h3 class="section-name"><p>Public properties</p>
+</h3>
+                </div>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocketAAC8delegateAA03WebB18ConnectionDelegate_pSgvp"></a>
+                    <a name="//apple_ref/swift/Property/delegate" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocketAAC8delegateAA03WebB18ConnectionDelegate_pSgvp">delegate</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The WebSocket connection delegate.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt"><a href="../Protocols/WebSocketConnectionDelegate.html">WebSocketConnectionDelegate</a></span><span class="p">?</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Model/Client/NWWebSocket.swift#L10">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocketAAC14defaultOptions7Network013NWProtocolWebB0C0D0CvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/defaultOptions" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocketAAC14defaultOptions7Network013NWProtocolWebB0C0D0CvpZ">defaultOptions</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The default <code>NWProtocolWebSocket.Options</code> for a WebSocket connection.</p>
+
+<p>These options specify that the connection automatically replies to Ping messages
+instead of delivering them to the <code>receiveMessage(data:context:)</code> method.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">defaultOptions</span><span class="p">:</span> <span class="kt">NWProtocolWebSocket</span><span class="o">.</span><span class="kt">Options</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Model/Client/NWWebSocket.swift#L16-L21">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Initialization"></a>
+                <a name="//apple_ref/swift/Section/Initialization" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Initialization"></a>
+                  <h3 class="section-name"><p>Initialization</p>
+</h3>
+                </div>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocketAAC7request20connectAutomatically7options15connectionQueueAB10Foundation10URLRequestV_Sb7Network013NWProtocolWebB0C7OptionsCSo17OS_dispatch_queueCtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(request:connectAutomatically:options:connectionQueue:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocketAAC7request20connectAutomatically7options15connectionQueueAB10Foundation10URLRequestV_Sb7Network013NWProtocolWebB0C7OptionsCSo17OS_dispatch_queueCtcfc">init(request:<wbr>connectAutomatically:<wbr>options:<wbr>connectionQueue:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates a <code>NWWebSocket</code> instance which connects to a socket <code>url</code> with some configuration <code>options</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">convenience</span> <span class="nf">init</span><span class="p">(</span><span class="nv">request</span><span class="p">:</span> <span class="kt">URLRequest</span><span class="p">,</span>
+                        <span class="nv">connectAutomatically</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+                        <span class="nv">options</span><span class="p">:</span> <span class="kt">NWProtocolWebSocket</span><span class="o">.</span><span class="kt">Options</span> <span class="o">=</span> <span class="kt">NWWebSocket</span><span class="o">.</span><span class="n"><a href="../Classes/NWWebSocket.html#/s:11NWWebSocketAAC14defaultOptions7Network013NWProtocolWebB0C0D0CvpZ">defaultOptions</a></span><span class="p">,</span>
+                        <span class="nv">connectionQueue</span><span class="p">:</span> <span class="kt">DispatchQueue</span> <span class="o">=</span> <span class="o">.</span><span class="n">main</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>request</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>URLRequest</code> containing the connection endpoint <code>URL</code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>connectAutomatically</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Determines if a connection should occur automatically on initialization.
+                  The default value is <code>false</code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>options</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The configuration options for the connection. The default value is <code><a href="../Classes/NWWebSocket.html#/s:11NWWebSocketAAC14defaultOptions7Network013NWProtocolWebB0C0D0CvpZ">NWWebSocket.defaultOptions</a></code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>connectionQueue</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A <code>DispatchQueue</code> on which to deliver all connection events. The default value is <code>.main</code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Model/Client/NWWebSocket.swift#L41-L49">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocketAAC3url20connectAutomatically7options15connectionQueueAB10Foundation3URLV_Sb7Network013NWProtocolWebB0C7OptionsCSo17OS_dispatch_queueCtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(url:connectAutomatically:options:connectionQueue:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocketAAC3url20connectAutomatically7options15connectionQueueAB10Foundation3URLV_Sb7Network013NWProtocolWebB0C7OptionsCSo17OS_dispatch_queueCtcfc">init(url:<wbr>connectAutomatically:<wbr>options:<wbr>connectionQueue:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Creates a <code>NWWebSocket</code> instance which connects a socket <code>url</code> with some configuration <code>options</code>.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="kt">URL</span><span class="p">,</span>
+            <span class="nv">connectAutomatically</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nv">options</span><span class="p">:</span> <span class="kt">NWProtocolWebSocket</span><span class="o">.</span><span class="kt">Options</span> <span class="o">=</span> <span class="kt">NWWebSocket</span><span class="o">.</span><span class="n"><a href="../Classes/NWWebSocket.html#/s:11NWWebSocketAAC14defaultOptions7Network013NWProtocolWebB0C0D0CvpZ">defaultOptions</a></span><span class="p">,</span>
+            <span class="nv">connectionQueue</span><span class="p">:</span> <span class="kt">DispatchQueue</span> <span class="o">=</span> <span class="o">.</span><span class="n">main</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>url</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The connection endpoint <code>URL</code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>connectAutomatically</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Determines if a connection should occur automatically on initialization.
+                  The default value is <code>false</code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>options</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The configuration options for the connection. The default value is <code><a href="../Classes/NWWebSocket.html#/s:11NWWebSocketAAC14defaultOptions7Network013NWProtocolWebB0C0D0CvpZ">NWWebSocket.defaultOptions</a></code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>connectionQueue</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A <code>DispatchQueue</code> on which to deliver all connection events. The default value is <code>.main</code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Model/Client/NWWebSocket.swift#L58-L78">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/WebSocketConnection%20conformance"></a>
+                <a name="//apple_ref/swift/Section/WebSocketConnection conformance" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/WebSocketConnection%20conformance"></a>
+                  <h3 class="section-name"><p>WebSocketConnection conformance</p>
+</h3>
+                </div>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocketAAC7connectyyF"></a>
+                    <a name="//apple_ref/swift/Method/connect()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocketAAC7connectyyF">connect()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Connect to the WebSocket.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">connect</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Model/Client/NWWebSocket.swift#L83-L92">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocketAAC4send6stringySS_tF"></a>
+                    <a name="//apple_ref/swift/Method/send(string:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocketAAC4send6stringySS_tF">send(string:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Send a UTF-8 formatted <code>String</code> over the WebSocket.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>string</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>String</code> that will be sent.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Model/Client/NWWebSocket.swift#L96-L105">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocketAAC4send4datay10Foundation4DataV_tF"></a>
+                    <a name="//apple_ref/swift/Method/send(data:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocketAAC4send4datay10Foundation4DataV_tF">send(data:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Send some <code>Data</code> over the WebSocket.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">send</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>data</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>Data</code> that will be sent.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Model/Client/NWWebSocket.swift#L109-L115">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocketAAC6listenyyF"></a>
+                    <a name="//apple_ref/swift/Method/listen()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocketAAC6listenyyF">listen()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Start listening for messages over the WebSocket.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">listen</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Model/Client/NWWebSocket.swift#L118-L134">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocketAAC4ping8intervalySd_tF"></a>
+                    <a name="//apple_ref/swift/Method/ping(interval:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocketAAC4ping8intervalySd_tF">ping(interval:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Ping the WebSocket periodically.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">ping</span><span class="p">(</span><span class="nv">interval</span><span class="p">:</span> <span class="kt">TimeInterval</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>interval</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>TimeInterval</code> (in seconds) with which to ping the server.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Model/Client/NWWebSocket.swift#L138-L147">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocketAAC4pingyyF"></a>
+                    <a name="//apple_ref/swift/Method/ping()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocketAAC4pingyyF">ping()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Ping the WebSocket once.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">ping</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Model/Client/NWWebSocket.swift#L150-L167">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocketAAC10disconnect9closeCodey7Network013NWProtocolWebB0C05CloseE0O_tF"></a>
+                    <a name="//apple_ref/swift/Method/disconnect(closeCode:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocketAAC10disconnect9closeCodey7Network013NWProtocolWebB0C05CloseE0O_tF">disconnect(closeCode:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Disconnect from the WebSocket.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">disconnect</span><span class="p">(</span><span class="nv">closeCode</span><span class="p">:</span> <span class="kt">NWProtocolWebSocket</span><span class="o">.</span><span class="kt">CloseCode</span> <span class="o">=</span> <span class="o">.</span><span class="nf">protocolCode</span><span class="p">(</span><span class="o">.</span><span class="n">normalClosure</span><span class="p">))</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>closeCode</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The code to use when closing the WebSocket connection.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Model/Client/NWWebSocket.swift#L171-L189">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2021 <a class="link" href="https://pusher.com" target="_blank" rel="external">Pusher</a>. All rights reserved. (Last updated: 2021-05-14)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

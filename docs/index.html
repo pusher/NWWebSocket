@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>NWWebSocket  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+    <script src="js/lunr.min.js" defer></script>
+    <script src="js/typeahead.jquery.js" defer></script>
+    <script src="js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a title="NWWebSocket  Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="index.html">NWWebSocket 0.5.2 Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/pusher/NWWebSocket"><img src="img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="index.html">NWWebSocket Reference</a>
+        <img id="carat" src="img/carat.png" />
+        NWWebSocket  Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/NWWebSocket.html">NWWebSocket</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Protocols/WebSocketConnection.html">WebSocketConnection</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/WebSocketConnectionDelegate.html">WebSocketConnectionDelegate</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            
+            <h1 id='nwwebsocket' class='heading'>NWWebSocket</h1>
+
+<p><img src="https://github.com/pusher/NWWebSocket/workflows/CI/badge.svg" alt="Build Status">
+<a href="https://github.com/pusher/NWWebSocket/releases"><img src="https://img.shields.io/github/v/release/pusher/NWWebSocket" alt="Latest Release"></a>
+<a href="https://pusher.github.io/NWWebSocket/"><img src="https://img.shields.io/badge/Docs-here!-lightgrey" alt="API Docs"></a>
+<a href="https://swiftpackageindex.com/pusher/NWWebSocket"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fpusher%2FNWWebSocket%2Fbadge%3Ftype%3Dplatforms" alt="Supported Platforms"></a>
+<a href="https://swiftpackageindex.com/pusher/NWWebSocket"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fpusher%2FNWWebSocket%2Fbadge%3Ftype%3Dswift-versions" alt="Swift Versions"></a>
+<a href="https://cocoapods.org/pods/NWWebSocket"><img src="https://img.shields.io/cocoapods/v/NWWebSocket.svg" alt="Cocoapods Compatible"></a>
+<a href="https://github.com/Carthage/Carthage"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage Compatible"></a>
+<a href="http://twitter.com/Pusher"><img src="https://img.shields.io/badge/twitter-@Pusher-blue.svg?style=flat" alt="Twitter"></a>
+<a href="https://raw.githubusercontent.com/pusher/NWWebSocket/master/LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-lightgrey.svg" alt="GitHub license"></a></p>
+
+<p>A WebSocket client written in Swift, using the Network framework from Apple.</p>
+
+<ul>
+<li><a href="#supported-platforms">Supported platforms</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#documentation">Documentation</a></li>
+<li><a href="#reporting-bugs-and-requesting-features">Reporting bugs and requesting features</a></li>
+<li><a href="#credits">Credits</a></li>
+<li><a href="#license">License</a></li>
+</ul>
+<h2 id='supported-platforms' class='heading'>Supported platforms</h2>
+
+<ul>
+<li>Swift 5.1 and above</li>
+<li>Xcode 11.0 and above</li>
+</ul>
+<h3 id='deployment-targets' class='heading'>Deployment targets</h3>
+
+<ul>
+<li>iOS 13.0 and above</li>
+<li>macOS 10.15 and above</li>
+<li>tvOS 13.0 and above</li>
+<li>watchOS 6.0 and above</li>
+</ul>
+<h2 id='installation' class='heading'>Installation</h2>
+<h3 id='cocoapods' class='heading'>CocoaPods</h3>
+
+<p><a href="http://cocoapods.org">CocoaPods</a> is a dependency manager for Cocoa projects.</p>
+
+<p>If you don&rsquo;t already have the Cocoapods gem installed, run the following command:</p>
+<pre class="highlight shell"><code><span class="nv">$ </span>gem <span class="nb">install </span>cocoapods
+</code></pre>
+
+<p>To integrate NWWebSocket into your Xcode project using CocoaPods, specify it in your <code>Podfile</code>:</p>
+<pre class="highlight ruby"><code><span class="n">source</span> <span class="s1">'https://github.com/CocoaPods/Specs.git'</span>
+<span class="n">platform</span> <span class="ss">:ios</span><span class="p">,</span> <span class="s1">'14.0'</span>
+<span class="n">use_frameworks!</span>
+
+<span class="n">pod</span> <span class="s1">'NWWebSocket'</span><span class="p">,</span> <span class="s1">'~&gt; 0.5.2'</span>
+</code></pre>
+
+<p>Then, run the following command:</p>
+<pre class="highlight shell"><code><span class="nv">$ </span>pod <span class="nb">install</span>
+</code></pre>
+
+<p>If you find that you&rsquo;re not having the most recent version installed when you run <code>pod install</code> then try running:</p>
+<pre class="highlight shell"><code><span class="nv">$ </span>pod cache clean
+<span class="nv">$ </span>pod repo update NWWebSocket
+<span class="nv">$ </span>pod <span class="nb">install</span>
+</code></pre>
+
+<p>Also you&rsquo;ll need to make sure that you&rsquo;ve not got the version of NWWebSocket locked to an old version in your <code>Podfile.lock</code> file.</p>
+<h3 id='swift-package-manager' class='heading'>Swift Package Manager</h3>
+
+<p>To integrate the library into your project using <a href="https://swift.org/package-manager/">Swift Package Manager</a>, you can add the library as a dependency in Xcode – see the <a href="https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app">docs</a>. The package repository URL is:</p>
+<pre class="highlight shell"><code>https://github.com/pusher/NWWebSocket.git
+</code></pre>
+
+<p>Alternatively, you can add the library as a dependency in your <code>Package.swift</code> file. For example:</p>
+<pre class="highlight swift"><code><span class="c1">// swift-tools-version:5.1</span>
+<span class="kd">import</span> <span class="kt">PackageDescription</span>
+
+<span class="k">let</span> <span class="nv">package</span> <span class="o">=</span> <span class="kt">Package</span><span class="p">(</span>
+    <span class="nv">name</span><span class="p">:</span> <span class="s">"YourPackage"</span><span class="p">,</span>
+    <span class="nv">products</span><span class="p">:</span> <span class="p">[</span>
+        <span class="o">.</span><span class="nf">library</span><span class="p">(</span>
+            <span class="nv">name</span><span class="p">:</span> <span class="s">"YourPackage"</span><span class="p">,</span>
+            <span class="nv">targets</span><span class="p">:</span> <span class="p">[</span><span class="s">"YourPackage"</span><span class="p">]),</span>
+    <span class="p">],</span>
+    <span class="nv">dependencies</span><span class="p">:</span> <span class="p">[</span>
+        <span class="o">.</span><span class="nf">package</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="s">"https://github.com/pusher/NWWebSocket.git"</span><span class="p">,</span>
+                 <span class="o">.</span><span class="nf">upToNextMajor</span><span class="p">(</span><span class="nv">from</span><span class="p">:</span> <span class="s">"0.5.2"</span><span class="p">)),</span>
+    <span class="p">],</span>
+    <span class="nv">targets</span><span class="p">:</span> <span class="p">[</span>
+        <span class="o">.</span><span class="nf">target</span><span class="p">(</span>
+            <span class="nv">name</span><span class="p">:</span> <span class="s">"YourPackage"</span><span class="p">,</span>
+            <span class="nv">dependencies</span><span class="p">:</span> <span class="p">[</span><span class="s">"NWWebSocket"</span><span class="p">]),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+</code></pre>
+
+<p>You will then need to include an <code>import NWWebSocket</code> statement in any source files where you wish to use the library.</p>
+<h2 id='usage' class='heading'>Usage</h2>
+
+<p>This section describes how to configure and use NWWebSocket to manage a WebSocket connection.</p>
+<h3 id='connection-and-disconnection' class='heading'>Connection and disconnection</h3>
+
+<p>Connection and disconnection is straightforward. Connecting to a WebSocket is manual by default, setting <code>connectAutomatically</code> to <code>true</code> makes connection automatic.</p>
+<h4 id='manual-connection' class='heading'>Manual connection</h4>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">socketURL</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"wss://somewebsockethost.com"</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">socket</span> <span class="o">=</span> <span class="kt">NWWebSocket</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="n">socketURL</span><span class="p">)</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="k">self</span>
+<span class="n">socket</span><span class="o">.</span><span class="nf">connect</span><span class="p">()</span>
+
+<span class="c1">// Use the WebSocket…</span>
+
+<span class="n">socket</span><span class="o">.</span><span class="nf">disconnect</span><span class="p">()</span>
+</code></pre>
+<h4 id='automatic-connection' class='heading'>Automatic connection</h4>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">socketURL</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"wss://somewebsockethost.com"</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">socket</span> <span class="o">=</span> <span class="kt">NWWebSocket</span><span class="p">(</span><span class="nv">url</span><span class="p">:</span> <span class="n">socketURL</span><span class="p">,</span> <span class="nv">connectAutomatically</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
+<span class="n">socket</span><span class="o">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="k">self</span>
+
+<span class="c1">// Use the WebSocket…</span>
+
+<span class="n">socket</span><span class="o">.</span><span class="nf">disconnect</span><span class="p">()</span>
+</code></pre>
+
+<p><strong>NOTES:</strong></p>
+
+<ul>
+<li>In the above code examples, <code>self</code> must conform to <code><a href="Protocols/WebSocketConnectionDelegate.html">WebSocketConnectionDelegate</a></code> (see <a href="#receiving-messages-and-connection-updates">Receiving messages and connection updates</a>)</li>
+</ul>
+<h3 id='sending-data' class='heading'>Sending data</h3>
+
+<p>UTF-8 encoded strings or binary data can be sent over the WebSocket connection.</p>
+<pre class="highlight swift"><code><span class="c1">// Sending a `String`</span>
+<span class="k">let</span> <span class="nv">message</span> <span class="o">=</span> <span class="s">"Hello, world!"</span>
+<span class="n">socket</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="n">message</span><span class="p">)</span>
+
+<span class="c1">// Sending some binary data</span>
+<span class="k">let</span> <span class="nv">data</span><span class="p">:</span> <span class="p">[</span><span class="kt">UInt8</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">123</span><span class="p">,</span> <span class="mi">234</span><span class="p">]</span>
+<span class="k">let</span> <span class="nv">messageData</span> <span class="o">=</span> <span class="kt">Data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">socket</span><span class="o">.</span><span class="nf">send</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="n">messageData</span><span class="p">)</span>
+</code></pre>
+<h3 id='receiving-messages-and-connection-updates' class='heading'>Receiving messages and connection updates</h3>
+
+<p>String or data messages (as well as connection state updates) can be received by making a type you define conform to <code><a href="Protocols/WebSocketConnectionDelegate.html">WebSocketConnectionDelegate</a></code>. You can then respond to received messages or connection events accordingly.</p>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">MyWebSocketConnectionManager</span><span class="p">:</span> <span class="kt">WebSocketConnectionDelegate</span> <span class="p">{</span>
+
+    <span class="kd">func</span> <span class="nf">webSocketDidConnect</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="kt">WebSocketConnection</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Respond to a WebSocket connection event</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">webSocketDidDisconnect</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="kt">WebSocketConnection</span><span class="p">,</span>
+                                <span class="nv">closeCode</span><span class="p">:</span> <span class="kt">NWProtocolWebSocket</span><span class="o">.</span><span class="kt">CloseCode</span><span class="p">,</span> <span class="nv">reason</span><span class="p">:</span> <span class="kt">Data</span><span class="p">?)</span> <span class="p">{</span>
+        <span class="c1">// Respond to a WebSocket disconnection event</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">webSocketViabilityDidChange</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="kt">WebSocketConnection</span><span class="p">,</span> <span class="nv">isViable</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Respond to a WebSocket connection viability change event</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">webSocketDidAttemptBetterPathMigration</span><span class="p">(</span><span class="nv">result</span><span class="p">:</span> <span class="kt">Result</span><span class="o">&lt;</span><span class="kt">WebSocketConnection</span><span class="p">,</span> <span class="kt">NWError</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Respond to when a WebSocket connection migrates to a better network path</span>
+        <span class="c1">// (e.g. A device moves from a cellular connection to a Wi-Fi connection)</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">webSocketDidReceiveError</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="kt">WebSocketConnection</span><span class="p">,</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">NWError</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Respond to a WebSocket error event</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">webSocketDidReceivePong</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="kt">WebSocketConnection</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Respond to a WebSocket connection receiving a Pong from the peer</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">webSocketDidReceiveMessage</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="kt">WebSocketConnection</span><span class="p">,</span> <span class="nv">string</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Respond to a WebSocket connection receiving a `String` message</span>
+    <span class="p">}</span>
+
+    <span class="kd">func</span> <span class="nf">webSocketDidReceiveMessage</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="kt">WebSocketConnection</span><span class="p">,</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Respond to a WebSocket connection receiving a binary `Data` message</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<h3 id='ping-and-pong' class='heading'>Ping and pong</h3>
+
+<p>Triggering a Ping on an active WebSocket connection is a best practice method of telling the connected peer that the connection should be maintained. Pings can be triggered on-demand or periodically.</p>
+<pre class="highlight swift"><code>
+<span class="c1">// Trigger a Ping on demand</span>
+<span class="n">socket</span><span class="o">.</span><span class="nf">ping</span><span class="p">()</span>
+
+<span class="c1">// Trigger a Ping periodically</span>
+<span class="c1">// (This is useful when messages are infrequently sent across the connection to prevent a connection closure)</span>
+<span class="n">socket</span><span class="o">.</span><span class="nf">ping</span><span class="p">(</span><span class="nv">interval</span><span class="p">:</span> <span class="mf">30.0</span><span class="p">)</span>
+</code></pre>
+<h2 id='documentation' class='heading'>Documentation</h2>
+
+<p>Full documentation of the library can be found in the <a href="https://pusher.github.io/NWWebSocket/">API docs</a>.</p>
+<h2 id='reporting-bugs-and-requesting-features' class='heading'>Reporting bugs and requesting features</h2>
+
+<ul>
+<li>If you have found a bug or have a feature request, please open an issue</li>
+<li>If you want to contribute, please submit a pull request (preferably with some tests 🙂 )</li>
+</ul>
+<h2 id='credits' class='heading'>Credits</h2>
+
+<p>NWWebSocket is owned and maintained by <a href="https://pusher.com">Pusher</a>. It was originally created by <a href="https://github.com/danielrbrowne">Daniel Browne</a>.</p>
+
+<p>It uses code from the following repositories:</p>
+
+<ul>
+<li><a href="https://github.com/MichaelNeas/perpetual-learning/tree/master/ios-sockets">perpetual-learning</a></li>
+</ul>
+<h2 id='license' class='heading'>License</h2>
+
+<p>NWWebSocket is released under the MIT license. See <a href="https://github.com/pusher/NWWebSocket/blob/master/LICENSE.md">LICENSE</a> for details.</p>
+
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2021 <a class="link" href="https://pusher.com" target="_blank" rel="external">Pusher</a>. All rights reserved. (Last updated: 2021-05-14)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>

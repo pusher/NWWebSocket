@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>WebSocketConnectionDelegate Protocol Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Protocol/WebSocketConnectionDelegate" class="dashAnchor"></a>
+    <a title="WebSocketConnectionDelegate Protocol Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">NWWebSocket 0.5.2 Docs</a> (100% documented)</p>
+        <p class="header-right"><a href="https://github.com/pusher/NWWebSocket"><img src="../img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right">
+          <form role="search" action="../search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">NWWebSocket Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        WebSocketConnectionDelegate Protocol Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/NWWebSocket.html">NWWebSocket</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/WebSocketConnectionDelegate.html">WebSocketConnectionDelegate</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>WebSocketConnectionDelegate</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">WebSocketConnectionDelegate</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
+
+                </div>
+              </div>
+            <p>Defines a delegate for a WebSocket connection.</p>
+
+              <div class="slightly-smaller">
+                <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Protocol/WebSocketConnection.swift#L36-L94">Show on GitHub</a>
+              </div>
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocket03WebB18ConnectionDelegateP03webB10DidConnect10connectionyAA0cbD0_p_tF"></a>
+                    <a name="//apple_ref/swift/Method/webSocketDidConnect(connection:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocket03WebB18ConnectionDelegateP03webB10DidConnect10connectionyAA0cbD0_p_tF">webSocketDidConnect(connection:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Tells the delegate that the WebSocket did connect successfully.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">webSocketDidConnect</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="kt"><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>connection</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The active <code><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Protocol/WebSocketConnection.swift#L39">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocket03WebB18ConnectionDelegateP03webB13DidDisconnect10connection9closeCode6reasonyAA0cbD0_p_7Network010NWProtocolcB0C05CloseK0O10Foundation4DataVSgtF"></a>
+                    <a name="//apple_ref/swift/Method/webSocketDidDisconnect(connection:closeCode:reason:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocket03WebB18ConnectionDelegateP03webB13DidDisconnect10connection9closeCode6reasonyAA0cbD0_p_7Network010NWProtocolcB0C05CloseK0O10Foundation4DataVSgtF">webSocketDidDisconnect(connection:<wbr>closeCode:<wbr>reason:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Tells the delegate that the WebSocket did disconnect.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">webSocketDidDisconnect</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="kt"><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></span><span class="p">,</span>
+                            <span class="nv">closeCode</span><span class="p">:</span> <span class="kt">NWProtocolWebSocket</span><span class="o">.</span><span class="kt">CloseCode</span><span class="p">,</span>
+                            <span class="nv">reason</span><span class="p">:</span> <span class="kt">Data</span><span class="p">?)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>connection</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></code> that disconnected.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>closeCode</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A <code>NWProtocolWebSocket.CloseCode</code> describing how the connection closed.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>reason</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>Optional extra information explaining the disconnection. (Formatted as UTF-8 encoded <code>Data</code>).</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Protocol/WebSocketConnection.swift#L46">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocket03WebB18ConnectionDelegateP03webB18ViabilityDidChange10connection8isViableyAA0cbD0_p_SbtF"></a>
+                    <a name="//apple_ref/swift/Method/webSocketViabilityDidChange(connection:isViable:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocket03WebB18ConnectionDelegateP03webB18ViabilityDidChange10connection8isViableyAA0cbD0_p_SbtF">webSocketViabilityDidChange(connection:<wbr>isViable:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Tells the delegate that the WebSocket connection viability has changed.</p>
+
+<p>An example scenario of when this method would be called is a Wi-Fi connection being lost due to a device
+moving out of signal range, and then the method would be called again once the device moved back in range.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">webSocketViabilityDidChange</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="kt"><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></span><span class="p">,</span>
+                                 <span class="nv">isViable</span><span class="p">:</span> <span class="kt">Bool</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>connection</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></code> whose viability has changed.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>isViable</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A <code>Bool</code> indicating if the connection is viable or not.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Protocol/WebSocketConnection.swift#L57">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocket03WebB18ConnectionDelegateP03webB29DidAttemptBetterPathMigration6resultys6ResultOyAA0cbD0_p7Network7NWErrorOG_tF"></a>
+                    <a name="//apple_ref/swift/Method/webSocketDidAttemptBetterPathMigration(result:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocket03WebB18ConnectionDelegateP03webB29DidAttemptBetterPathMigration6resultys6ResultOyAA0cbD0_p7Network7NWErrorOG_tF">webSocketDidAttemptBetterPathMigration(result:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Tells the delegate that the WebSocket has attempted a migration based on a better network path becoming available.</p>
+
+<p>An example of when this method would be called is if a device is using a cellular connection, and a Wi-Fi connection
+becomes available. This method will also be called if a device loses a Wi-Fi connection, and a cellular connection is available.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">webSocketDidAttemptBetterPathMigration</span><span class="p">(</span><span class="nv">result</span><span class="p">:</span> <span class="kt">Result</span><span class="o">&lt;</span><span class="kt"><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></span><span class="p">,</span> <span class="kt">NWError</span><span class="o">&gt;</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>result</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>A <code>Result</code> containing the <code><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></code> if the migration was successful, or a
+<code>NWError</code> if the migration failed for some reason.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Protocol/WebSocketConnection.swift#L66">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocket03WebB18ConnectionDelegateP03webB15DidReceiveError10connection5erroryAA0cbD0_p_7Network7NWErrorOtF"></a>
+                    <a name="//apple_ref/swift/Method/webSocketDidReceiveError(connection:error:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocket03WebB18ConnectionDelegateP03webB15DidReceiveError10connection5erroryAA0cbD0_p_7Network7NWErrorOtF">webSocketDidReceiveError(connection:<wbr>error:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Tells the delegate that the WebSocket received an error.</p>
+
+<p>An error received by a WebSocket is not necessarily fatal.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">webSocketDidReceiveError</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="kt"><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></span><span class="p">,</span>
+                              <span class="nv">error</span><span class="p">:</span> <span class="kt">NWError</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>connection</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></code> that received an error.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>error</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>NWError</code> that was received.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Protocol/WebSocketConnection.swift#L74">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocket03WebB18ConnectionDelegateP03webB14DidReceivePong10connectionyAA0cbD0_p_tF"></a>
+                    <a name="//apple_ref/swift/Method/webSocketDidReceivePong(connection:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocket03WebB18ConnectionDelegateP03webB14DidReceivePong10connectionyAA0cbD0_p_tF">webSocketDidReceivePong(connection:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Tells the delegate that the WebSocket received a &lsquo;pong&rsquo; from the server.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">webSocketDidReceivePong</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="kt"><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>connection</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The active <code><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Protocol/WebSocketConnection.swift#L79">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocket03WebB18ConnectionDelegateP03webB17DidReceiveMessage10connection6stringyAA0cbD0_p_SStF"></a>
+                    <a name="//apple_ref/swift/Method/webSocketDidReceiveMessage(connection:string:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocket03WebB18ConnectionDelegateP03webB17DidReceiveMessage10connection6stringyAA0cbD0_p_SStF">webSocketDidReceiveMessage(connection:<wbr>string:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Tells the delegate that the WebSocket received a <code>String</code> message.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">webSocketDidReceiveMessage</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="kt"><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></span><span class="p">,</span>
+                                <span class="nv">string</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>connection</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The active <code><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>string</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The UTF-8 formatted <code>String</code> that was received.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Protocol/WebSocketConnection.swift#L85">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:11NWWebSocket03WebB18ConnectionDelegateP03webB17DidReceiveMessage10connection4datayAA0cbD0_p_10Foundation4DataVtF"></a>
+                    <a name="//apple_ref/swift/Method/webSocketDidReceiveMessage(connection:data:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:11NWWebSocket03WebB18ConnectionDelegateP03webB17DidReceiveMessage10connection4datayAA0cbD0_p_10Foundation4DataVtF">webSocketDidReceiveMessage(connection:<wbr>data:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Tells the delegate that the WebSocket received a binary <code>Data</code> message.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">webSocketDidReceiveMessage</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="kt"><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></span><span class="p">,</span>
+                                <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                      <div>
+                        <h4>Parameters</h4>
+                        <table class="graybox">
+                          <tbody>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>connection</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The active <code><a href="../Protocols/WebSocketConnection.html">WebSocketConnection</a></code>.</p>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>
+                                <code>
+                                <em>data</em>
+                                </code>
+                              </td>
+                              <td>
+                                <div>
+                                  <p>The <code>Data</code> that was received.</p>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="slightly-smaller">
+                        <a href="https://github.com/pusher/NWWebSocket/tree/0.5.2/Sources/NWWebSocket/Protocol/WebSocketConnection.swift#L92">Show on GitHub</a>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2021 <a class="link" href="https://pusher.com" target="_blank" rel="external">Pusher</a>. All rights reserved. (Last updated: 2021-05-14)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
