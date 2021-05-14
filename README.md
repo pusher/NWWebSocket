@@ -1,7 +1,10 @@
 # NWWebSocket
 
-![Languages](https://img.shields.io/badge/languages-swift-orange.svg)
-![Platform](https://img.shields.io/cocoapods/p/NWWebSocket.svg)
+![Build Status](https://github.com/pusher/NWWebSocket/workflows/CI/badge.svg)
+[![Latest Release](https://img.shields.io/github/v/release/pusher/NWWebSocket)](https://github.com/pusher/NWWebSocket/releases)
+[![API Docs](https://img.shields.io/badge/Docs-here!-lightgrey)](https://pusher.github.io/NWWebSocket/)
+[![Supported Platforms](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fpusher%2FNWWebSocket%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/pusher/NWWebSocket)
+[![Swift Versions](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fpusher%2FNWWebSocket%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/pusher/NWWebSocket)
 [![Cocoapods Compatible](https://img.shields.io/cocoapods/v/NWWebSocket.svg)](https://cocoapods.org/pods/NWWebSocket)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Twitter](https://img.shields.io/badge/twitter-@Pusher-blue.svg?style=flat)](http://twitter.com/Pusher)
