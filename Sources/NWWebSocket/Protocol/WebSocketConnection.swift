@@ -28,6 +28,7 @@ public protocol WebSocketConnection {
     /// - Parameter closeCode: The code to use when closing the WebSocket connection.
     func disconnect(closeCode: NWProtocolWebSocket.CloseCode)
 
+    /// The WebSocket connection delegate.
     var delegate: WebSocketConnectionDelegate? { get set }
 }
 
