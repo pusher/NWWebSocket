@@ -101,7 +101,7 @@ let package = Package(
 )
 ```
 
-You will then need to include an `import NWWebSocket` statement in any source files where you wish to use the library.
+You will then need to include both `import Network` and `import NWWebSocket` statements in any source files where you wish to use the library.
 
 ## Usage
 
