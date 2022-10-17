@@ -28,7 +28,6 @@ A WebSocket client written in Swift, using the Network framework from Apple.
 - iOS 13.0 and above
 - macOS 10.15 and above
 - tvOS 13.0 and above
-- watchOS 6.0 and above
 
 ## Installation
 
