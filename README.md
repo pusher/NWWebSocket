@@ -48,7 +48,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '14.0'
 use_frameworks!
 
-pod 'NWWebSocket', '~> 0.5.2'
+pod 'NWWebSocket', '~> 0.5.3'
 ```
 
 Then, run the following command:
@@ -90,7 +90,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pusher/NWWebSocket.git",
-                 .upToNextMajor(from: "0.5.2")),
+                 .upToNextMajor(from: "0.5.3")),
     ],
     targets: [
         .target(
