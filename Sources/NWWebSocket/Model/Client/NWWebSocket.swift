@@ -352,7 +352,7 @@ open class NWWebSocket: WebSocketConnection {
         disconnectionWorkItem?.cancel()
 
         disconnectionWorkItem = DispatchWorkItem { [weak self] in
-            guard let self else { return }
+            guard let self = self else { return }
             self.delegate?.webSocketDidDisconnect(connection: self,
                                                   closeCode: closeCode,
                                                   reason: reason)
