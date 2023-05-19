@@ -83,9 +83,15 @@ open class NWWebSocket: WebSocketConnection {
     open func connect() {
         if connection == nil {
             connection = NWConnection(to: endpoint, using: parameters)
-            connection?.stateUpdateHandler = stateDidChange(to:)
-            connection?.betterPathUpdateHandler = betterPath(isAvailable:)
-            connection?.viabilityUpdateHandler = viabilityDidChange(isViable:)
+            connection?.stateUpdateHandler = { [weak self] state in
+                self?.stateDidChange(to: state)
+            }
+            connection?.betterPathUpdateHandler = { [weak self] isAvailable in
+                self?.betterPath(isAvailable: isAvailable)
+            }
+            connection?.viabilityUpdateHandler = { [weak self] isViable in
+                self?.viabilityDidChange(isViable: isViable)
+            }
             listen()
             connection?.start(queue: connectionQueue)
         }
@@ -345,7 +351,8 @@ open class NWWebSocket: WebSocketConnection {
         // Cancel any existing `disconnectionWorkItem` that was set first
         disconnectionWorkItem?.cancel()
 
-        disconnectionWorkItem = DispatchWorkItem {
+        disconnectionWorkItem = DispatchWorkItem { [weak self] in
+            guard let self else { return }
             self.delegate?.webSocketDidDisconnect(connection: self,
                                                   closeCode: closeCode,
                                                   reason: reason)
