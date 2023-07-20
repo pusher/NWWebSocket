@@ -23,6 +23,7 @@ open class NWWebSocket: WebSocketConnection {
     // MARK: - Private properties
 
     private var connection: NWConnection?
+    private var migratedConnection: NWConnection?
     private let endpoint: NWEndpoint
     private let parameters: NWParameters
     private let connectionQueue: DispatchQueue
@@ -244,7 +245,9 @@ open class NWWebSocket: WebSocketConnection {
     /// or a `NWError` if the migration failed for some reason.
     private func migrateConnection(completionHandler: @escaping (Result<WebSocketConnection, NWError>) -> Void) {
 
-        let migratedConnection = NWConnection(to: endpoint, using: parameters)
+        migratedConnection?.cancel()
+        migratedConnection = nil
+        migratedConnection = NWConnection(to: endpoint, using: parameters)
         migratedConnection.stateUpdateHandler = { [weak self] state in
             guard let self = self else {
                 return
@@ -252,6 +255,7 @@ open class NWWebSocket: WebSocketConnection {
 
             switch state {
             case .ready:
+                self.connection?.cancel()
                 self.connection = nil
                 migratedConnection.stateUpdateHandler = self.stateDidChange(to:)
                 migratedConnection.betterPathUpdateHandler = self.betterPath(isAvailable:)
