@@ -20,6 +20,8 @@ open class NWWebSocket: WebSocketConnection {
         return options
     }
 
+    private let errorWhileWaitingLimit = 20
+
     // MARK: - Private properties
 
     private var connection: NWConnection?
@@ -28,6 +30,8 @@ open class NWWebSocket: WebSocketConnection {
     private let connectionQueue: DispatchQueue
     private var pingTimer: Timer?
     private var disconnectionWorkItem: DispatchWorkItem?
+    private var isMigratingConnection = false
+    private var errorWhileWaitingCount = 0
 
     // MARK: - Initialization
 
@@ -77,6 +81,11 @@ open class NWWebSocket: WebSocketConnection {
         }
     }
 
+    deinit {
+        connection?.intentionalDisconnection = true
+        connection?.cancel()
+    }
+
     // MARK: - WebSocketConnection conformance
 
     /// Connect to the WebSocket.
@@ -93,6 +102,8 @@ open class NWWebSocket: WebSocketConnection {
                 self?.viabilityDidChange(isViable: isViable)
             }
             listen()
+            connection?.start(queue: connectionQueue)
+        } else if connection?.state != .ready && !isMigratingConnection {
             connection?.start(queue: connectionQueue)
         }
     }
@@ -189,8 +200,12 @@ open class NWWebSocket: WebSocketConnection {
             let context = NWConnection.ContentContext(identifier: "closeContext",
                                                       metadata: [metadata])
 
-            // See implementation of `send(data:context:)` for `scheduleDisconnection(closeCode:, reason:)`
-            send(data: nil, context: context)
+            if connection?.state == .ready {
+                // See implementation of `send(data:context:)` for `scheduleDisconnection(closeCode:, reason:)`
+                send(data: nil, context: context)
+            } else {
+                scheduleDisconnectionReporting(closeCode: closeCode, reason: nil)
+            }
         }
     }
 
@@ -203,14 +218,26 @@ open class NWWebSocket: WebSocketConnection {
     private func stateDidChange(to state: NWConnection.State) {
         switch state {
         case .ready:
+            isMigratingConnection = false
             delegate?.webSocketDidConnect(connection: self)
         case .waiting(let error):
+            isMigratingConnection = false
             reportErrorOrDisconnection(error)
+
+            /// Workaround to prevent loop while reconnecting
+            errorWhileWaitingCount += 1
+            if errorWhileWaitingCount >= errorWhileWaitingLimit {
+                tearDownConnection(error: error)
+                errorWhileWaitingCount = 0
+            }
         case .failed(let error):
+            errorWhileWaitingCount = 0
+            isMigratingConnection = false
             tearDownConnection(error: error)
         case .setup, .preparing:
             break
         case .cancelled:
+            errorWhileWaitingCount = 0
             tearDownConnection(error: nil)
         @unknown default:
             fatalError()
@@ -243,35 +270,22 @@ open class NWWebSocket: WebSocketConnection {
     /// - Parameter completionHandler: Returns a `Result`with the new connection if the migration was successful
     /// or a `NWError` if the migration failed for some reason.
     private func migrateConnection(completionHandler: @escaping (Result<WebSocketConnection, NWError>) -> Void) {
-
-        let migratedConnection = NWConnection(to: endpoint, using: parameters)
-        migratedConnection.stateUpdateHandler = { [weak self] state in
-            guard let self = self else {
-                return
-            }
-
-            switch state {
-            case .ready:
-                self.connection = nil
-                migratedConnection.stateUpdateHandler = self.stateDidChange(to:)
-                migratedConnection.betterPathUpdateHandler = self.betterPath(isAvailable:)
-                migratedConnection.viabilityUpdateHandler = self.viabilityDidChange(isViable:)
-                self.connection = migratedConnection
-                self.listen()
-                completionHandler(.success(self))
-            case .waiting(let error):
-                completionHandler(.failure(error))
-            case .failed(let error):
-                completionHandler(.failure(error))
-            case .setup, .preparing:
-                break
-            case .cancelled:
-                completionHandler(.failure(.posix(.ECANCELED)))
-            @unknown default:
-                fatalError()
-            }
+        guard !isMigratingConnection else { return }
+        connection?.intentionalDisconnection = true
+        connection?.cancel()
+        isMigratingConnection = true
+        connection = NWConnection(to: endpoint, using: parameters)
+        connection?.stateUpdateHandler = { [weak self] state in
+            self?.stateDidChange(to: state)
         }
-        migratedConnection.start(queue: connectionQueue)
+        connection?.betterPathUpdateHandler = { [weak self] isAvailable in
+            self?.betterPath(isAvailable: isAvailable)
+        }
+        connection?.viabilityUpdateHandler = { [weak self] isViable in
+            self?.viabilityDidChange(isViable: isViable)
+        }
+        listen()
+        connection?.start(queue: connectionQueue)
     }
 
     // MARK: Connection data transfer
@@ -321,21 +335,21 @@ open class NWWebSocket: WebSocketConnection {
                          contentContext: context,
                          isComplete: true,
                          completion: .contentProcessed({ [weak self] error in
-                            guard let self = self else {
-                                return
-                            }
+            guard let self = self else {
+                return
+            }
 
-                            // If a connection closure was sent, inform delegate on completion
-                            if let socketMetadata = context.protocolMetadata.first as? NWProtocolWebSocket.Metadata,
-                               socketMetadata.opcode == .close {
-                                self.scheduleDisconnectionReporting(closeCode: socketMetadata.closeCode,
-                                                                    reason: data)
-                            }
+            // If a connection closure was sent, inform delegate on completion
+            if let socketMetadata = context.protocolMetadata.first as? NWProtocolWebSocket.Metadata,
+               socketMetadata.opcode == .close {
+                self.scheduleDisconnectionReporting(closeCode: socketMetadata.closeCode,
+                                                    reason: data)
+            }
 
-                            if let error = error {
-                                self.reportErrorOrDisconnection(error)
-                            }
-                         }))
+            if let error = error {
+                self.reportErrorOrDisconnection(error)
+            }
+        }))
     }
 
     // MARK: Connection cleanup
@@ -369,6 +383,7 @@ open class NWWebSocket: WebSocketConnection {
             delegate?.webSocketDidReceiveError(connection: self, error: error)
         }
         pingTimer?.invalidate()
+        connection?.cancel()
         connection = nil
 
         if let disconnectionWorkItem = disconnectionWorkItem {
