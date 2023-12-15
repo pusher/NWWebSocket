@@ -36,6 +36,7 @@ jobs:
     needs: check-release-tag
     if: ${{ needs.check-release-tag.outputs.tag }}
     steps:
+      - uses: actions/checkout@v2
       - name: Build
         run: swift build -v
       - name: Run tests
