@@ -47,8 +47,20 @@ open class NWWebSocket: WebSocketConnection {
                             options: NWProtocolWebSocket.Options = NWWebSocket.defaultOptions,
                             connectionQueue: DispatchQueue = .main) {
 
-        self.init(url: request.url!,
+        guard let url = request.url else {
+            // If URLRequest has no URL, create a placeholder that will immediately fail
+            // This prevents a crash and allows proper error handling
+            let invalidURL = URL(string: "ws://invalid.url")!
+            self.init(url: invalidURL,
+                      connectAutomatically: connectAutomatically,
+                      options: options,
+                      connectionQueue: connectionQueue)
+            return
+        }
+
+        self.init(url: url,
                   connectAutomatically: connectAutomatically,
+                  options: options,
                   connectionQueue: connectionQueue)
     }
 
