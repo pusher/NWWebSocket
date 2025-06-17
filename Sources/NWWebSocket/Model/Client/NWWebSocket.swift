@@ -95,12 +95,12 @@ open class NWWebSocket: WebSocketConnection {
 
     deinit {
         connection?.intentionalDisconnection = true
-        
+
         // Clear all handlers before cancelling to prevent race conditions
         connection?.stateUpdateHandler = nil
         connection?.betterPathUpdateHandler = nil
         connection?.viabilityUpdateHandler = nil
-        
+
         connection?.cancel()
     }
 
@@ -173,7 +173,7 @@ open class NWWebSocket: WebSocketConnection {
     open func ping(interval: TimeInterval) {
         // Invalidate any existing timer to prevent memory leaks
         pingTimer?.invalidate()
-        
+
         pingTimer = .scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             guard let self = self else {
                 return
@@ -212,11 +212,6 @@ open class NWWebSocket: WebSocketConnection {
         // Call `cancel()` directly for a `normalClosure`
         // (Otherwise send the custom closeCode as a message).
         if closeCode == .protocolCode(.normalClosure) {
-            // Clear all handlers before cancelling to prevent race conditions
-            connection?.stateUpdateHandler = nil
-            connection?.betterPathUpdateHandler = nil
-            connection?.viabilityUpdateHandler = nil
-            
             connection?.cancel()
             scheduleDisconnectionReporting(closeCode: closeCode,
                                            reason: nil)
@@ -300,24 +295,24 @@ open class NWWebSocket: WebSocketConnection {
     /// - Parameter completionHandler: Returns a `Result`with the new connection if the migration was successful
     /// or a `NWError` if the migration failed for some reason.
     private func migrateConnection(completionHandler: @escaping (Result<WebSocketConnection, NWError>) -> Void) {
-        guard !isMigratingConnection else { 
+        guard !isMigratingConnection else {
             completionHandler(.failure(NWError.posix(.EALREADY)))
-            return 
+            return
         }
         connection?.intentionalDisconnection = true
-        
+
         // Clear all handlers before cancelling to prevent race conditions
         connection?.stateUpdateHandler = nil
         connection?.betterPathUpdateHandler = nil
         connection?.viabilityUpdateHandler = nil
-        
+
         connection?.cancel()
         isMigratingConnection = true
         connection = NWConnection(to: endpoint, using: parameters)
         connection?.stateUpdateHandler = { [weak self] state in
             guard let self = self else { return }
             self.stateDidChange(to: state)
-            
+
             // Call completion handler based on connection state
             switch state {
             case .ready:
@@ -417,7 +412,9 @@ open class NWWebSocket: WebSocketConnection {
         disconnectionWorkItem?.cancel()
 
         disconnectionWorkItem = DispatchWorkItem { [weak self] in
-            guard let self = self else { return }
+            guard let self = self else {
+                return
+            }
             self.delegate?.webSocketDidDisconnect(connection: self,
                                                   closeCode: closeCode,
                                                   reason: reason)
@@ -434,13 +431,16 @@ open class NWWebSocket: WebSocketConnection {
             delegate?.webSocketDidReceiveError(connection: self, error: error)
         }
         pingTimer?.invalidate()
-        
+
         // Clear all handlers before cancelling to prevent race conditions
         connection?.stateUpdateHandler = nil
         connection?.betterPathUpdateHandler = nil
         connection?.viabilityUpdateHandler = nil
-        
-        connection?.cancel()
+
+        // Only cancel if not already cancelled
+        if connection?.state != .cancelled {
+            connection?.cancel()
+        }
         connection = nil
 
         if let disconnectionWorkItem = disconnectionWorkItem {
@@ -456,7 +456,8 @@ open class NWWebSocket: WebSocketConnection {
             delegate?.webSocketDidReceiveError(connection: self, error: error)
         }
 
-        if isDisconnectionNWError(error) {
+        // Only schedule disconnection if we haven't already scheduled one
+        if isDisconnectionNWError(error) && disconnectionWorkItem == nil {
             let reasonData = "The websocket disconnected unexpectedly".data(using: .utf8)
             scheduleDisconnectionReporting(closeCode: .protocolCode(.goingAway),
                                            reason: reasonData)

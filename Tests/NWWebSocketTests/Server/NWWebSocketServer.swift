@@ -36,6 +36,27 @@ internal class NWSwiftWebSocketServer {
 
     func stop() {
         listener?.cancel()
+        listener = nil
+    }
+
+    func stop(completion: @escaping () -> Void) {
+        guard listener != nil else {
+            completion()
+            return
+        }
+        
+        // Set up completion handler before stopping
+        listener?.stateUpdateHandler = { state in
+            switch state {
+            case .cancelled:
+                completion()
+            default:
+                break
+            }
+        }
+        
+        listener?.cancel()
+        listener = nil
     }
 
     // MARK: - Private methods
@@ -91,6 +112,7 @@ internal class NWSwiftWebSocketServer {
     }
 
     private func stopSever(error: NWError?) {
+        self.listener?.cancel()
         self.listener = nil
         for connection in self.connectionsByID.values {
             connection.didStopHandler = nil

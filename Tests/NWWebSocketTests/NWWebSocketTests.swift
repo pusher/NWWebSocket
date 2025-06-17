@@ -1,5 +1,6 @@
 import XCTest
 import Network
+import Darwin
 @testable import NWWebSocket
 
 class NWWebSocketTests: XCTestCase {
@@ -50,17 +51,78 @@ class NWWebSocketTests: XCTestCase {
     static let dataMessage = "This is a data message!".data(using: .utf8)!
     static let expectedReceivedPongsCount = 3
     static let repeatedPingInterval = 0.5
-    static let validLocalhostServerPort: UInt16 = 3000
+    static var validLocalhostServerPort: UInt16 = 3000
     static let invalidLocalhostServerPort: UInt16 = 2000
+
+    /// Find an available port to avoid conflicts
+    private static func findAvailablePort() -> UInt16 {
+        // Try ports starting from 3000
+        for port in 3000...3100 {
+            let testSocket = Darwin.socket(AF_INET, SOCK_STREAM, 0)
+            defer { close(testSocket) }
+            
+            var addr = sockaddr_in()
+            addr.sin_family = sa_family_t(AF_INET)
+            addr.sin_port = CFSwapInt16HostToBig(UInt16(port))
+            addr.sin_addr.s_addr = inet_addr("127.0.0.1")
+            
+            let result = withUnsafePointer(to: &addr) {
+                $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
+                    Darwin.bind(testSocket, $0, socklen_t(MemoryLayout<sockaddr_in>.size))
+                }
+            }
+            
+            if result == 0 {
+                return UInt16(port)
+            }
+        }
+        
+        // Fallback to random port in range
+        return UInt16.random(in: 3000...4000)
+    }
 
     override func setUp() {
         super.setUp()
 
+        // Find an available port to avoid conflicts
+        Self.validLocalhostServerPort = Self.findAvailablePort()
+        
         Self.server = NWSwiftWebSocketServer(port: Self.validLocalhostServerPort)
         try! Self.server.start()
         let serverURL = URL(string: "ws://localhost:\(Self.validLocalhostServerPort)")!
         Self.socket = NWWebSocket(url: serverURL)
         Self.socket.delegate = self
+        Self.receivedPongTimestamps = []
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        
+        // Clean up socket
+        if Self.socket != nil {
+            Self.socket.disconnect()
+            Self.socket = nil
+        }
+        
+        // Clean up server with proper async handling
+        if Self.server != nil {
+            let expectation = XCTestExpectation(description: "Server cleanup")
+            Self.server.stop {
+                expectation.fulfill()
+            }
+            
+            wait(for: [expectation], timeout: 2.0)
+            Self.server = nil
+        }
+        
+        // Reset all expectations
+        Self.connectExpectation = nil
+        Self.disconnectExpectation = nil
+        Self.stringMessageExpectation = nil
+        Self.dataMessageExpectation = nil
+        Self.pongExpectation = nil
+        Self.pingsWithIntervalExpectation = nil
+        Self.errorExpectation = nil
         Self.receivedPongTimestamps = []
     }
 
@@ -132,7 +194,7 @@ extension NWWebSocketTests: WebSocketConnectionDelegate {
 
     func webSocketDidDisconnect(connection: WebSocketConnection,
                                 closeCode: NWProtocolWebSocket.CloseCode, reason: Data?) {
-        Self.disconnectExpectation.fulfill()
+        Self.disconnectExpectation?.fulfill()
     }
 
     func webSocketViabilityDidChange(connection: WebSocketConnection, isViable: Bool) {
