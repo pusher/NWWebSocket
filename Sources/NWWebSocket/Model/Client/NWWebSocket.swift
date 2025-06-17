@@ -95,6 +95,12 @@ open class NWWebSocket: WebSocketConnection {
 
     deinit {
         connection?.intentionalDisconnection = true
+        
+        // Clear all handlers before cancelling to prevent race conditions
+        connection?.stateUpdateHandler = nil
+        connection?.betterPathUpdateHandler = nil
+        connection?.viabilityUpdateHandler = nil
+        
         connection?.cancel()
     }
 
@@ -203,6 +209,11 @@ open class NWWebSocket: WebSocketConnection {
         // Call `cancel()` directly for a `normalClosure`
         // (Otherwise send the custom closeCode as a message).
         if closeCode == .protocolCode(.normalClosure) {
+            // Clear all handlers before cancelling to prevent race conditions
+            connection?.stateUpdateHandler = nil
+            connection?.betterPathUpdateHandler = nil
+            connection?.viabilityUpdateHandler = nil
+            
             connection?.cancel()
             scheduleDisconnectionReporting(closeCode: closeCode,
                                            reason: nil)
@@ -284,6 +295,12 @@ open class NWWebSocket: WebSocketConnection {
     private func migrateConnection(completionHandler: @escaping (Result<WebSocketConnection, NWError>) -> Void) {
         guard !isMigratingConnection else { return }
         connection?.intentionalDisconnection = true
+        
+        // Clear all handlers before cancelling to prevent race conditions
+        connection?.stateUpdateHandler = nil
+        connection?.betterPathUpdateHandler = nil
+        connection?.viabilityUpdateHandler = nil
+        
         connection?.cancel()
         isMigratingConnection = true
         connection = NWConnection(to: endpoint, using: parameters)
@@ -395,6 +412,12 @@ open class NWWebSocket: WebSocketConnection {
             delegate?.webSocketDidReceiveError(connection: self, error: error)
         }
         pingTimer?.invalidate()
+        
+        // Clear all handlers before cancelling to prevent race conditions
+        connection?.stateUpdateHandler = nil
+        connection?.betterPathUpdateHandler = nil
+        connection?.viabilityUpdateHandler = nil
+        
         connection?.cancel()
         connection = nil
 
