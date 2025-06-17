@@ -266,7 +266,11 @@ open class NWWebSocket: WebSocketConnection {
             errorWhileWaitingCount = 0
             tearDownConnection(error: nil)
         @unknown default:
-            fatalError()
+            // Handle unknown states gracefully - treat as a failure condition
+            errorWhileWaitingCount = 0
+            isMigratingConnection = false
+            let unknownStateError = NWError.posix(.ECONNABORTED)
+            tearDownConnection(error: unknownStateError)
         }
     }
 
@@ -354,7 +358,8 @@ open class NWWebSocket: WebSocketConnection {
             // SEE `ping()` FOR PONG RECEIVE LOGIC.
             break
         @unknown default:
-            fatalError()
+            // Handle unknown opcodes gracefully - just ignore them
+            break
         }
     }
 
