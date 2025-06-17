@@ -300,7 +300,10 @@ open class NWWebSocket: WebSocketConnection {
     /// - Parameter completionHandler: Returns a `Result`with the new connection if the migration was successful
     /// or a `NWError` if the migration failed for some reason.
     private func migrateConnection(completionHandler: @escaping (Result<WebSocketConnection, NWError>) -> Void) {
-        guard !isMigratingConnection else { return }
+        guard !isMigratingConnection else { 
+            completionHandler(.failure(NWError.posix(.EALREADY)))
+            return 
+        }
         connection?.intentionalDisconnection = true
         
         // Clear all handlers before cancelling to prevent race conditions
@@ -312,7 +315,18 @@ open class NWWebSocket: WebSocketConnection {
         isMigratingConnection = true
         connection = NWConnection(to: endpoint, using: parameters)
         connection?.stateUpdateHandler = { [weak self] state in
-            self?.stateDidChange(to: state)
+            guard let self = self else { return }
+            self.stateDidChange(to: state)
+            
+            // Call completion handler based on connection state
+            switch state {
+            case .ready:
+                completionHandler(.success(self))
+            case .failed(let error):
+                completionHandler(.failure(error))
+            default:
+                break
+            }
         }
         connection?.betterPathUpdateHandler = { [weak self] isAvailable in
             self?.betterPath(isAvailable: isAvailable)
@@ -482,4 +496,3 @@ open class NWWebSocket: WebSocketConnection {
         }
     }
 }
-
