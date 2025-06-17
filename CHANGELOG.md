@@ -4,7 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/pusher/NWWebSocket/compare/0.5.4...HEAD)
+## [Unreleased](https://github.com/pusher/NWWebSocket/compare/0.5.5...HEAD)
+
+## [0.5.5](https://github.com/pusher/NWWebSocket/compare/0.5.4...0.5.5) - 2025-06-17
+
+### Fixed
+
+- Multiple fixes to prevent potential crash [#54]
+    + Handle empty request url.
+    + Clear all handlers before disconnecting/cancelling connections.
+    + Invalidate existing ping timers before scheduling a new one.
+    + Handle unknown connection states gracefully.
+    + Call completionHandler when migrating connections.
+    + Fix failing tests.
 
 ## [0.5.4](https://github.com/pusher/NWWebSocket/compare/0.5.3...0.5.4) - 2023-12-15
 
@@ -28,7 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- Resolved a race condition that could prevent a manual reconnection attempt in certain circumstances. 
+- Resolved a race condition that could prevent a manual reconnection attempt in certain circumstances.
 
 ## [0.5.0](https://github.com/pusher/NWWebSocket/compare/0.4.0...0.5.0) - 2020-11-20
 
