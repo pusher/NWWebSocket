@@ -48,7 +48,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '14.0'
 use_frameworks!
 
-pod 'NWWebSocket', '~> 0.5.4'
+pod 'NWWebSocket', '~> 0.5.5'
 ```
 
 Then, run the following command:
@@ -67,7 +67,7 @@ $ pod install
 
 Also you'll need to make sure that you've not got the version of NWWebSocket locked to an old version in your `Podfile.lock` file.
 
-### Swift Package Manager 
+### Swift Package Manager
 
 To integrate the library into your project using [Swift Package Manager](https://swift.org/package-manager/), you can add the library as a dependency in Xcode – see the [docs](https://developer.apple.com/documentation/xcode/adding_package_dependencies_to_your_app). The package repository URL is:
 
@@ -90,7 +90,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pusher/NWWebSocket.git",
-                 .upToNextMajor(from: "0.5.4")),
+                 .upToNextMajor(from: "0.5.5")),
     ],
     targets: [
         .target(
