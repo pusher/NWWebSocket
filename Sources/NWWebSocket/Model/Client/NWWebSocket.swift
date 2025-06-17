@@ -171,6 +171,9 @@ open class NWWebSocket: WebSocketConnection {
     /// Ping the WebSocket periodically.
     /// - Parameter interval: The `TimeInterval` (in seconds) with which to ping the server.
     open func ping(interval: TimeInterval) {
+        // Invalidate any existing timer to prevent memory leaks
+        pingTimer?.invalidate()
+        
         pingTimer = .scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             guard let self = self else {
                 return
