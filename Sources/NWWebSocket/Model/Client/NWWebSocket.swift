@@ -47,8 +47,20 @@ open class NWWebSocket: WebSocketConnection {
                             options: NWProtocolWebSocket.Options = NWWebSocket.defaultOptions,
                             connectionQueue: DispatchQueue = .main) {
 
-        self.init(url: request.url!,
+        guard let url = request.url else {
+            // If URLRequest has no URL, create a placeholder that will immediately fail
+            // This prevents a crash and allows proper error handling
+            let invalidURL = URL(string: "ws://invalid.url")!
+            self.init(url: invalidURL,
+                      connectAutomatically: connectAutomatically,
+                      options: options,
+                      connectionQueue: connectionQueue)
+            return
+        }
+
+        self.init(url: url,
                   connectAutomatically: connectAutomatically,
+                  options: options,
                   connectionQueue: connectionQueue)
     }
 
@@ -83,6 +95,12 @@ open class NWWebSocket: WebSocketConnection {
 
     deinit {
         connection?.intentionalDisconnection = true
+
+        // Clear all handlers before cancelling to prevent race conditions
+        connection?.stateUpdateHandler = nil
+        connection?.betterPathUpdateHandler = nil
+        connection?.viabilityUpdateHandler = nil
+
         connection?.cancel()
     }
 
@@ -153,6 +171,9 @@ open class NWWebSocket: WebSocketConnection {
     /// Ping the WebSocket periodically.
     /// - Parameter interval: The `TimeInterval` (in seconds) with which to ping the server.
     open func ping(interval: TimeInterval) {
+        // Invalidate any existing timer to prevent memory leaks
+        pingTimer?.invalidate()
+
         pingTimer = .scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             guard let self = self else {
                 return
@@ -240,7 +261,11 @@ open class NWWebSocket: WebSocketConnection {
             errorWhileWaitingCount = 0
             tearDownConnection(error: nil)
         @unknown default:
-            fatalError()
+            // Handle unknown states gracefully - treat as a failure condition
+            errorWhileWaitingCount = 0
+            isMigratingConnection = false
+            let unknownStateError = NWError.posix(.ECONNABORTED)
+            tearDownConnection(error: unknownStateError)
         }
     }
 
@@ -270,13 +295,33 @@ open class NWWebSocket: WebSocketConnection {
     /// - Parameter completionHandler: Returns a `Result`with the new connection if the migration was successful
     /// or a `NWError` if the migration failed for some reason.
     private func migrateConnection(completionHandler: @escaping (Result<WebSocketConnection, NWError>) -> Void) {
-        guard !isMigratingConnection else { return }
+        guard !isMigratingConnection else {
+            completionHandler(.failure(NWError.posix(.EALREADY)))
+            return
+        }
         connection?.intentionalDisconnection = true
+
+        // Clear all handlers before cancelling to prevent race conditions
+        connection?.stateUpdateHandler = nil
+        connection?.betterPathUpdateHandler = nil
+        connection?.viabilityUpdateHandler = nil
+
         connection?.cancel()
         isMigratingConnection = true
         connection = NWConnection(to: endpoint, using: parameters)
         connection?.stateUpdateHandler = { [weak self] state in
-            self?.stateDidChange(to: state)
+            guard let self = self else { return }
+            self.stateDidChange(to: state)
+
+            // Call completion handler based on connection state
+            switch state {
+            case .ready:
+                completionHandler(.success(self))
+            case .failed(let error):
+                completionHandler(.failure(error))
+            default:
+                break
+            }
         }
         connection?.betterPathUpdateHandler = { [weak self] isAvailable in
             self?.betterPath(isAvailable: isAvailable)
@@ -322,7 +367,8 @@ open class NWWebSocket: WebSocketConnection {
             // SEE `ping()` FOR PONG RECEIVE LOGIC.
             break
         @unknown default:
-            fatalError()
+            // Handle unknown opcodes gracefully - just ignore them
+            break
         }
     }
 
@@ -366,7 +412,9 @@ open class NWWebSocket: WebSocketConnection {
         disconnectionWorkItem?.cancel()
 
         disconnectionWorkItem = DispatchWorkItem { [weak self] in
-            guard let self = self else { return }
+            guard let self = self else {
+                return
+            }
             self.delegate?.webSocketDidDisconnect(connection: self,
                                                   closeCode: closeCode,
                                                   reason: reason)
@@ -383,7 +431,16 @@ open class NWWebSocket: WebSocketConnection {
             delegate?.webSocketDidReceiveError(connection: self, error: error)
         }
         pingTimer?.invalidate()
-        connection?.cancel()
+
+        // Clear all handlers before cancelling to prevent race conditions
+        connection?.stateUpdateHandler = nil
+        connection?.betterPathUpdateHandler = nil
+        connection?.viabilityUpdateHandler = nil
+
+        // Only cancel if not already cancelled
+        if connection?.state != .cancelled {
+            connection?.cancel()
+        }
         connection = nil
 
         if let disconnectionWorkItem = disconnectionWorkItem {
@@ -399,7 +456,8 @@ open class NWWebSocket: WebSocketConnection {
             delegate?.webSocketDidReceiveError(connection: self, error: error)
         }
 
-        if isDisconnectionNWError(error) {
+        // Only schedule disconnection if we haven't already scheduled one
+        if isDisconnectionNWError(error) && disconnectionWorkItem == nil {
             let reasonData = "The websocket disconnected unexpectedly".data(using: .utf8)
             scheduleDisconnectionReporting(closeCode: .protocolCode(.goingAway),
                                            reason: reasonData)
@@ -439,4 +497,3 @@ open class NWWebSocket: WebSocketConnection {
         }
     }
 }
-
