@@ -305,6 +305,8 @@ open class NWWebSocket: WebSocketConnection {
             return
         }
 
+        isMigratingConnection = true
+
         let oldConnection = connection
         oldConnection?.intentionalDisconnection = true
 
@@ -313,7 +315,6 @@ open class NWWebSocket: WebSocketConnection {
         oldConnection?.betterPathUpdateHandler = nil
         oldConnection?.viabilityUpdateHandler = nil
 
-        isMigratingConnection = true
         connection = NWConnection(to: endpoint, using: parameters)
         connection?.stateUpdateHandler = { [weak self] state in
             guard let self = self else { return }
