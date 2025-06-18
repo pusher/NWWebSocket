@@ -475,8 +475,9 @@ open class NWWebSocket: WebSocketConnection {
             }
         }
 
-        if let disconnectionWorkItem = disconnectionWorkItem {
-            connectionQueue.async(execute: disconnectionWorkItem)
+        let workItem = disconnectionWorkItem
+        if let workItem = workItem {
+            connectionQueue.async(execute: workItem)
         }
     }
 
