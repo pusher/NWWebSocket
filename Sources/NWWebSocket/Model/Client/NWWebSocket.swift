@@ -95,14 +95,18 @@ open class NWWebSocket: WebSocketConnection {
     }
 
     deinit {
-        connection?.intentionalDisconnection = true
+        let localConnection = connection
 
         // Clear all handlers before cancelling to prevent race conditions
-        connection?.stateUpdateHandler = nil
-        connection?.betterPathUpdateHandler = nil
-        connection?.viabilityUpdateHandler = nil
+        localConnection?.intentionalDisconnection = true
+        localConnection?.stateUpdateHandler = nil
+        localConnection?.betterPathUpdateHandler = nil
+        localConnection?.viabilityUpdateHandler = nil
 
-        connection?.cancel()
+        // Cancel on a background queue with delay
+        DispatchQueue.global().asyncAfter(deadline: .now() + 1.0) {
+            localConnection?.cancel()
+        }
     }
 
     // MARK: - WebSocketConnection conformance
