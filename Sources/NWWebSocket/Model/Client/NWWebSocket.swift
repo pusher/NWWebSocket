@@ -339,7 +339,6 @@ open class NWWebSocket: WebSocketConnection {
         listen()
         connection?.start(queue: connectionQueue)
 
-
         // cancel the old connection after new one is set up
         connectionQueue.asyncAfter(deadline: .now() + 0.1) {
             oldConnection?.cancel()
