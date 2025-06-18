@@ -4,7 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/pusher/NWWebSocket/compare/0.5.5...HEAD)
+## [Unreleased](https://github.com/pusher/NWWebSocket/compare/0.5.6...HEAD)
+
+## [0.5.5](https://github.com/pusher/NWWebSocket/compare/0.5.5...0.5.6) - 2025-06-18
+
+### Fixed
+
+- Multiple fixes to prevent potential race conditions [#56]
+    + Keeping references alive during cleanup
+    + Proper ordering and synchronization
+    + Defensive programming
+    + Delayed cleanup
 
 ## [0.5.5](https://github.com/pusher/NWWebSocket/compare/0.5.4...0.5.5) - 2025-06-17
 
