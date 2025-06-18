@@ -299,14 +299,15 @@ open class NWWebSocket: WebSocketConnection {
             completionHandler(.failure(NWError.posix(.EALREADY)))
             return
         }
-        connection?.intentionalDisconnection = true
+
+        let oldConnection = connection
+        oldConnection?.intentionalDisconnection = true
 
         // Clear all handlers before cancelling to prevent race conditions
-        connection?.stateUpdateHandler = nil
-        connection?.betterPathUpdateHandler = nil
-        connection?.viabilityUpdateHandler = nil
+        oldConnection?.stateUpdateHandler = nil
+        oldConnection?.betterPathUpdateHandler = nil
+        oldConnection?.viabilityUpdateHandler = nil
 
-        connection?.cancel()
         isMigratingConnection = true
         connection = NWConnection(to: endpoint, using: parameters)
         connection?.stateUpdateHandler = { [weak self] state in
@@ -331,6 +332,12 @@ open class NWWebSocket: WebSocketConnection {
         }
         listen()
         connection?.start(queue: connectionQueue)
+
+
+        // cancel the old connection after new one is set up
+        connectionQueue.asyncAfter(deadline: .now() + 0.1) {
+            oldConnection?.cancel()
+        }
     }
 
     // MARK: Connection data transfer
