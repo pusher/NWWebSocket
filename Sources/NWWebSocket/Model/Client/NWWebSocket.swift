@@ -421,6 +421,8 @@ open class NWWebSocket: WebSocketConnection {
     ///   - reason: Optional extra information explaining the disconnection. (Formatted as UTF-8 encoded `Data`).
     private func scheduleDisconnectionReporting(closeCode: NWProtocolWebSocket.CloseCode,
                                                 reason: Data?) {
+        var workItemToExecute: DispatchWorkItem?
+
         disconnectionQueue.sync {
             // Cancel any existing `disconnectionWorkItem` that was set first
             disconnectionWorkItem?.cancel()
@@ -433,9 +435,12 @@ open class NWWebSocket: WebSocketConnection {
             }
 
             disconnectionWorkItem = workItem
+            workItemToExecute = workItem
         }
 
-        connectionQueue.async(execute: disconnectionWorkItem!)
+        if let workItem = workItemToExecute {
+            connectionQueue.async(execute: workItem)
+        }
     }
 
     /// Tear down the `connection`.
