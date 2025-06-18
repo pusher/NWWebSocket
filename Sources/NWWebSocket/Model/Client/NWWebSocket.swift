@@ -439,21 +439,34 @@ open class NWWebSocket: WebSocketConnection {
     /// a `cancelled` or `failed` state within the `stateUpdateHandler` closure.
     /// - Parameter error: error description
     private func tearDownConnection(error: NWError?) {
+        let connectionToTearDown = connection
+
+        // Mark as intentional first
+        connectionToTearDown?.intentionalDisconnection = true
+
         if let error = error, shouldReportNWError(error) {
             delegate?.webSocketDidReceiveError(connection: self, error: error)
         }
         pingTimer?.invalidate()
 
-        // Clear all handlers before cancelling to prevent race conditions
-        connection?.stateUpdateHandler = nil
-        connection?.betterPathUpdateHandler = nil
-        connection?.viabilityUpdateHandler = nil
-
-        // Only cancel if not already cancelled
-        if connection?.state != .cancelled {
-            connection?.cancel()
-        }
+        // Clear connection reference
         connection = nil
+
+        // Cleanup on a different queue to avoid deadlock
+        connectionQueue.async { [weak connectionToTearDown] in
+            // Clear all handlers before cancelling to prevent race conditions
+            connectionToTearDown?.stateUpdateHandler = nil
+            connectionToTearDown?.betterPathUpdateHandler = nil
+            connectionToTearDown?.viabilityUpdateHandler = nil
+
+            // Small delay to let any in-flight callbacks complete
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                // Only cancel if not already cancelled
+                if connectionToTearDown?.state != .cancelled {
+                    connectionToTearDown?.cancel()
+                }
+            }
+        }
 
         if let disconnectionWorkItem = disconnectionWorkItem {
             connectionQueue.async(execute: disconnectionWorkItem)
