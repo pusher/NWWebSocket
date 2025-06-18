@@ -29,6 +29,7 @@ open class NWWebSocket: WebSocketConnection {
     private let parameters: NWParameters
     private let connectionQueue: DispatchQueue
     private var pingTimer: Timer?
+    private let disconnectionQueue = DispatchQueue(label: "nwwebsocket.disconnection")
     private var disconnectionWorkItem: DispatchWorkItem?
     private var isMigratingConnection = false
     private var errorWhileWaitingCount = 0
@@ -415,16 +416,20 @@ open class NWWebSocket: WebSocketConnection {
     ///   - reason: Optional extra information explaining the disconnection. (Formatted as UTF-8 encoded `Data`).
     private func scheduleDisconnectionReporting(closeCode: NWProtocolWebSocket.CloseCode,
                                                 reason: Data?) {
-        // Cancel any existing `disconnectionWorkItem` that was set first
-        disconnectionWorkItem?.cancel()
+        disconnectionQueue.sync {
+            // Cancel any existing `disconnectionWorkItem` that was set first
+            disconnectionWorkItem?.cancel()
 
-        disconnectionWorkItem = DispatchWorkItem { [weak self] in
-            guard let self = self else {
-                return
+            let workItem = DispatchWorkItem { [weak self] in
+                guard let self = self else { return }
+                self.delegate?.webSocketDidDisconnect(connection: self,
+                        closeCode: closeCode,
+                        reason: reason)
             }
-            self.delegate?.webSocketDidDisconnect(connection: self,
-                                                  closeCode: closeCode,
-                                                  reason: reason)
+
+            disconnectionWorkItem = workItem
+
+            connectionQueue.async(execute: workItem)
         }
     }
 
