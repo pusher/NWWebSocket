@@ -29,6 +29,7 @@ open class NWWebSocket: WebSocketConnection {
     private let parameters: NWParameters
     private let connectionQueue: DispatchQueue
     private var pingTimer: Timer?
+    private let disconnectionQueue = DispatchQueue(label: "nwwebsocket.disconnection")
     private var disconnectionWorkItem: DispatchWorkItem?
     private var isMigratingConnection = false
     private var errorWhileWaitingCount = 0
@@ -94,14 +95,18 @@ open class NWWebSocket: WebSocketConnection {
     }
 
     deinit {
-        connection?.intentionalDisconnection = true
+        let localConnection = connection
 
         // Clear all handlers before cancelling to prevent race conditions
-        connection?.stateUpdateHandler = nil
-        connection?.betterPathUpdateHandler = nil
-        connection?.viabilityUpdateHandler = nil
+        localConnection?.intentionalDisconnection = true
+        localConnection?.stateUpdateHandler = nil
+        localConnection?.betterPathUpdateHandler = nil
+        localConnection?.viabilityUpdateHandler = nil
 
-        connection?.cancel()
+        // Cancel on a background queue with delay
+        DispatchQueue.global().asyncAfter(deadline: .now() + 1.0) {
+            localConnection?.cancel()
+        }
     }
 
     // MARK: - WebSocketConnection conformance
@@ -299,15 +304,17 @@ open class NWWebSocket: WebSocketConnection {
             completionHandler(.failure(NWError.posix(.EALREADY)))
             return
         }
-        connection?.intentionalDisconnection = true
+
+        isMigratingConnection = true
+
+        let oldConnection = connection
+        oldConnection?.intentionalDisconnection = true
 
         // Clear all handlers before cancelling to prevent race conditions
-        connection?.stateUpdateHandler = nil
-        connection?.betterPathUpdateHandler = nil
-        connection?.viabilityUpdateHandler = nil
+        oldConnection?.stateUpdateHandler = nil
+        oldConnection?.betterPathUpdateHandler = nil
+        oldConnection?.viabilityUpdateHandler = nil
 
-        connection?.cancel()
-        isMigratingConnection = true
         connection = NWConnection(to: endpoint, using: parameters)
         connection?.stateUpdateHandler = { [weak self] state in
             guard let self = self else { return }
@@ -331,6 +338,11 @@ open class NWWebSocket: WebSocketConnection {
         }
         listen()
         connection?.start(queue: connectionQueue)
+
+        // cancel the old connection after new one is set up
+        connectionQueue.asyncAfter(deadline: .now() + 0.1) {
+            oldConnection?.cancel()
+        }
     }
 
     // MARK: Connection data transfer
@@ -408,16 +420,25 @@ open class NWWebSocket: WebSocketConnection {
     ///   - reason: Optional extra information explaining the disconnection. (Formatted as UTF-8 encoded `Data`).
     private func scheduleDisconnectionReporting(closeCode: NWProtocolWebSocket.CloseCode,
                                                 reason: Data?) {
-        // Cancel any existing `disconnectionWorkItem` that was set first
-        disconnectionWorkItem?.cancel()
+        var workItemToExecute: DispatchWorkItem?
 
-        disconnectionWorkItem = DispatchWorkItem { [weak self] in
-            guard let self = self else {
-                return
+        disconnectionQueue.sync {
+            // Cancel any existing `disconnectionWorkItem` that was set first
+            disconnectionWorkItem?.cancel()
+
+            let workItem = DispatchWorkItem { [weak self] in
+                guard let self = self else { return }
+                self.delegate?.webSocketDidDisconnect(connection: self,
+                        closeCode: closeCode,
+                        reason: reason)
             }
-            self.delegate?.webSocketDidDisconnect(connection: self,
-                                                  closeCode: closeCode,
-                                                  reason: reason)
+
+            disconnectionWorkItem = workItem
+            workItemToExecute = workItem
+        }
+
+        if let workItem = workItemToExecute {
+            connectionQueue.async(execute: workItem)
         }
     }
 
@@ -427,24 +448,40 @@ open class NWWebSocket: WebSocketConnection {
     /// a `cancelled` or `failed` state within the `stateUpdateHandler` closure.
     /// - Parameter error: error description
     private func tearDownConnection(error: NWError?) {
+        let connectionToTearDown = connection
+
+        // Mark as intentional first
+        connectionToTearDown?.intentionalDisconnection = true
+
         if let error = error, shouldReportNWError(error) {
             delegate?.webSocketDidReceiveError(connection: self, error: error)
         }
         pingTimer?.invalidate()
 
-        // Clear all handlers before cancelling to prevent race conditions
-        connection?.stateUpdateHandler = nil
-        connection?.betterPathUpdateHandler = nil
-        connection?.viabilityUpdateHandler = nil
-
-        // Only cancel if not already cancelled
-        if connection?.state != .cancelled {
-            connection?.cancel()
-        }
+        // Clear connection reference
         connection = nil
 
-        if let disconnectionWorkItem = disconnectionWorkItem {
-            connectionQueue.async(execute: disconnectionWorkItem)
+        // Cleanup on a different queue to avoid deadlock
+        connectionQueue.async { [weak connectionToTearDown] in
+            // Clear all handlers before cancelling to prevent race conditions
+            connectionToTearDown?.stateUpdateHandler = nil
+            connectionToTearDown?.betterPathUpdateHandler = nil
+            connectionToTearDown?.viabilityUpdateHandler = nil
+
+            // Small delay to let any in-flight callbacks complete
+            DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                guard let connection = connectionToTearDown else { return }
+
+                // Only cancel if not already cancelled
+                if connection.state != .cancelled {
+                    connection.cancel()
+                }
+            }
+        }
+
+        let workItem = disconnectionWorkItem
+        if let workItem = workItem {
+            connectionQueue.async(execute: workItem)
         }
     }
 
