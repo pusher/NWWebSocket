@@ -432,9 +432,9 @@ open class NWWebSocket: WebSocketConnection {
             }
 
             disconnectionWorkItem = workItem
-
-            connectionQueue.async(execute: workItem)
         }
+
+        connectionQueue.async(execute: disconnectionWorkItem!)
     }
 
     /// Tear down the `connection`.
