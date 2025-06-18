@@ -465,9 +465,11 @@ open class NWWebSocket: WebSocketConnection {
 
             // Small delay to let any in-flight callbacks complete
             DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                guard let connection = connectionToTearDown else { return }
+
                 // Only cancel if not already cancelled
-                if connectionToTearDown?.state != .cancelled {
-                    connectionToTearDown?.cancel()
+                if connection.state != .cancelled {
+                    connection.cancel()
                 }
             }
         }
