@@ -126,8 +126,23 @@ open class NWWebSocket: WebSocketConnection {
             }
             listen()
             connection?.start(queue: connectionQueue)
-        } else if connection?.state != .ready && !isMigratingConnection {
-            connection?.start(queue: connectionQueue)
+        } else if let conn = connection, !isMigratingConnection {
+            // Only start if the connection is in a state that allows starting
+            switch conn.state {
+            case .setup:
+                // Connection exists but hasn't been started yet
+                conn.start(queue: connectionQueue)
+            case .cancelled, .failed:
+                // Connection is dead - don't try to start it
+                // Let the stateDidChange handler deal with cleanup
+                break
+            case .ready, .preparing, .waiting:
+                // Connection is already started or connected - do nothing
+                break
+            @unknown default:
+                // Handle unknown states safely
+                break
+            }
         }
     }
 
