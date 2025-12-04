@@ -33,6 +33,7 @@ open class NWWebSocket: WebSocketConnection {
     private var disconnectionWorkItem: DispatchWorkItem?
     private var isMigratingConnection = false
     private var errorWhileWaitingCount = 0
+    private var isListening = false
 
     // MARK: - Initialization
 
@@ -113,37 +114,44 @@ open class NWWebSocket: WebSocketConnection {
 
     /// Connect to the WebSocket.
     open func connect() {
-        if connection == nil {
-            connection = NWConnection(to: endpoint, using: parameters)
-            connection?.stateUpdateHandler = { [weak self] state in
-                self?.stateDidChange(to: state)
-            }
-            connection?.betterPathUpdateHandler = { [weak self] isAvailable in
-                self?.betterPath(isAvailable: isAvailable)
-            }
-            connection?.viabilityUpdateHandler = { [weak self] isViable in
-                self?.viabilityDidChange(isViable: isViable)
-            }
-            listen()
-            connection?.start(queue: connectionQueue)
-        } else if let conn = connection, !isMigratingConnection {
-            // Only start if the connection is in a state that allows starting
-            switch conn.state {
-            case .setup:
-                // Connection exists but hasn't been started yet
-                conn.start(queue: connectionQueue)
-            case .cancelled, .failed:
-                // Connection is dead - don't try to start it
-                // Let the stateDidChange handler deal with cleanup
-                break
-            case .ready, .preparing, .waiting:
-                // Connection is already started or connected - do nothing
-                break
+        // If we have an existing connection in a bad state, tear it down first
+        if let existingConnection = connection {
+            switch existingConnection.state {
+            case .cancelled, .failed, .waiting:
+                // Connection is dead or stuck - tear it down and create fresh
+                isListening = false
+                existingConnection.stateUpdateHandler = nil
+                existingConnection.betterPathUpdateHandler = nil
+                existingConnection.viabilityUpdateHandler = nil
+                existingConnection.cancel()
+                connection = nil
+            case .ready:
+                // Already connected - just restart listening if needed
+                listen()
+                return
+            case .setup, .preparing:
+                // Connection is being set up - let it continue
+                return
             @unknown default:
-                // Handle unknown states safely
                 break
             }
         }
+
+        // Create a fresh connection
+        guard !isMigratingConnection else { return }
+
+        connection = NWConnection(to: endpoint, using: parameters)
+        connection?.stateUpdateHandler = { [weak self] state in
+            self?.stateDidChange(to: state)
+        }
+        connection?.betterPathUpdateHandler = { [weak self] isAvailable in
+            self?.betterPath(isAvailable: isAvailable)
+        }
+        connection?.viabilityUpdateHandler = { [weak self] isViable in
+            self?.viabilityDidChange(isViable: isViable)
+        }
+        listen()
+        connection?.start(queue: connectionQueue)
     }
 
     /// Send a UTF-8 formatted `String` over the WebSocket.
@@ -171,6 +179,9 @@ open class NWWebSocket: WebSocketConnection {
 
     /// Start listening for messages over the WebSocket.
     public func listen() {
+        guard !isListening else { return }
+        isListening = true
+
         connection?.receiveMessage { [weak self] (data, context, _, error) in
             guard let self = self else {
                 return
@@ -181,8 +192,10 @@ open class NWWebSocket: WebSocketConnection {
             }
 
             if let error = error {
+                self.isListening = false
                 self.reportErrorOrDisconnection(error)
             } else {
+                self.isListening = false
                 self.listen()
             }
         }
@@ -260,6 +273,7 @@ open class NWWebSocket: WebSocketConnection {
         switch state {
         case .ready:
             isMigratingConnection = false
+            listen()  // Restart listening when connection becomes ready
             delegate?.webSocketDidConnect(connection: self)
         case .waiting(let error):
             isMigratingConnection = false
@@ -463,6 +477,7 @@ open class NWWebSocket: WebSocketConnection {
     /// a `cancelled` or `failed` state within the `stateUpdateHandler` closure.
     /// - Parameter error: error description
     private func tearDownConnection(error: NWError?) {
+        isListening = false
         let connectionToTearDown = connection
 
         // Mark as intentional first
