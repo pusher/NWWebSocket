@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/pusher/NWWebSocket/compare/0.5.9...HEAD)
+## [Unreleased](https://github.com/pusher/NWWebSocket/compare/0.5.10...HEAD)
+
+## [0.5.10](https://github.com/pusher/NWWebSocket/compare/0.5.9...0.5.10) - 2026-03-03
+
+### Fixed
+
+- Treat any POSIX error as a disconnection to handle ENODATA (96) and other unrecognised codes that leave the connection in a zombie state
 
 ## [0.5.9](https://github.com/pusher/NWWebSocket/compare/0.5.8...0.5.9) - 2025-12-05
 

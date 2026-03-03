@@ -526,6 +526,8 @@ open class NWWebSocket: WebSocketConnection {
         // Only schedule disconnection if we haven't already scheduled one
         if isDisconnectionNWError(error) && disconnectionWorkItem == nil {
             let reasonData = "The websocket disconnected unexpectedly".data(using: .utf8)
+            // Cancel the zombie connection to ensure reconnect creates a fresh NWConnection
+            connection?.cancel()
             scheduleDisconnectionReporting(closeCode: .protocolCode(.goingAway),
                                            reason: reasonData)
         }
@@ -558,6 +560,9 @@ open class NWWebSocket: WebSocketConnection {
             || code == .ECANCELED
             || code == .ENETDOWN
             || code == .ECONNABORTED {
+            return true
+        } else if case .posix(_) = error {
+            // Catch-all for other POSIX errors (e.g. ENODATA) that also indicate a dead connection
             return true
         } else {
             return false
