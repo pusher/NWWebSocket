@@ -34,6 +34,7 @@ open class NWWebSocket: WebSocketConnection {
     private var isMigratingConnection = false
     private var errorWhileWaitingCount = 0
     private var isListening = false
+    private var currentConnectionGeneration = 0
 
     // MARK: - Initialization
 
@@ -140,17 +141,18 @@ open class NWWebSocket: WebSocketConnection {
         // Create a fresh connection
         guard !isMigratingConnection else { return }
 
+        let generation = beginConnectionGeneration()
         connection = NWConnection(to: endpoint, using: parameters)
         connection?.stateUpdateHandler = { [weak self] state in
-            self?.stateDidChange(to: state)
+            self?.stateDidChange(to: state, generation: generation)
         }
         connection?.betterPathUpdateHandler = { [weak self] isAvailable in
-            self?.betterPath(isAvailable: isAvailable)
+            self?.betterPath(isAvailable: isAvailable, generation: generation)
         }
         connection?.viabilityUpdateHandler = { [weak self] isViable in
-            self?.viabilityDidChange(isViable: isViable)
+            self?.viabilityDidChange(isViable: isViable, generation: generation)
         }
-        listen()
+        listen(connection: connection, generation: generation)
         connection?.start(queue: connectionQueue)
     }
 
@@ -179,11 +181,20 @@ open class NWWebSocket: WebSocketConnection {
 
     /// Start listening for messages over the WebSocket.
     public func listen() {
+        listen(connection: connection, generation: currentConnectionGeneration)
+    }
+
+    private func listen(connection: NWConnection?, generation: Int) {
         guard !isListening else { return }
         isListening = true
 
         connection?.receiveMessage { [weak self] (data, context, _, error) in
             guard let self = self else {
+                return
+            }
+
+            guard self.isCurrentConnectionGeneration(generation) else {
+                self.isListening = false
                 return
             }
 
@@ -196,7 +207,7 @@ open class NWWebSocket: WebSocketConnection {
                 self.reportErrorOrDisconnection(error)
             } else {
                 self.isListening = false
-                self.listen()
+                self.listen(connection: self.connection, generation: generation)
             }
         }
     }
@@ -219,9 +230,14 @@ open class NWWebSocket: WebSocketConnection {
 
     /// Ping the WebSocket once.
     open func ping() {
+        let generation = currentConnectionGeneration
         let metadata = NWProtocolWebSocket.Metadata(opcode: .ping)
         metadata.setPongHandler(connectionQueue) { [weak self] error in
             guard let self = self else {
+                return
+            }
+
+            guard self.isCurrentConnectionGeneration(generation) else {
                 return
             }
 
@@ -240,27 +256,7 @@ open class NWWebSocket: WebSocketConnection {
     /// Disconnect from the WebSocket.
     /// - Parameter closeCode: The code to use when closing the WebSocket connection.
     open func disconnect(closeCode: NWProtocolWebSocket.CloseCode = .protocolCode(.normalClosure)) {
-        connection?.intentionalDisconnection = true
-
-        // Call `cancel()` directly for a `normalClosure`
-        // (Otherwise send the custom closeCode as a message).
-        if closeCode == .protocolCode(.normalClosure) {
-            connection?.cancel()
-            scheduleDisconnectionReporting(closeCode: closeCode,
-                                           reason: nil)
-        } else {
-            let metadata = NWProtocolWebSocket.Metadata(opcode: .close)
-            metadata.closeCode = closeCode
-            let context = NWConnection.ContentContext(identifier: "closeContext",
-                                                      metadata: [metadata])
-
-            if connection?.state == .ready {
-                // See implementation of `send(data:context:)` for `scheduleDisconnection(closeCode:, reason:)`
-                send(data: nil, context: context)
-            } else {
-                scheduleDisconnectionReporting(closeCode: closeCode, reason: nil)
-            }
-        }
+        forceDisconnect(closeCode: closeCode, reason: nil)
     }
 
     // MARK: - Private methods
@@ -269,11 +265,13 @@ open class NWWebSocket: WebSocketConnection {
 
     /// The handler for managing changes to the `connection.state` via the `stateUpdateHandler` on a `NWConnection`.
     /// - Parameter state: The new `NWConnection.State`
-    private func stateDidChange(to state: NWConnection.State) {
+    private func stateDidChange(to state: NWConnection.State, generation: Int) {
+        guard isCurrentConnectionGeneration(generation) else { return }
+
         switch state {
         case .ready:
             isMigratingConnection = false
-            listen()  // Restart listening when connection becomes ready
+            listen(connection: connection, generation: generation)  // Restart listening when connection becomes ready
             delegate?.webSocketDidConnect(connection: self)
         case .waiting(let error):
             isMigratingConnection = false
@@ -305,7 +303,9 @@ open class NWWebSocket: WebSocketConnection {
 
     /// The handler for informing the `delegate` if there is a better network path available
     /// - Parameter isAvailable: `true` if a better network path is available.
-    private func betterPath(isAvailable: Bool) {
+    private func betterPath(isAvailable: Bool, generation: Int) {
+        guard isCurrentConnectionGeneration(generation) else { return }
+
         if isAvailable {
             migrateConnection { [weak self] result in
                 guard let self = self else {
@@ -319,7 +319,8 @@ open class NWWebSocket: WebSocketConnection {
 
     /// The handler for informing the `delegate` if the network connection viability has changed.
     /// - Parameter isViable: `true` if the network connection is viable.
-    private func viabilityDidChange(isViable: Bool) {
+    private func viabilityDidChange(isViable: Bool, generation: Int) {
+        guard isCurrentConnectionGeneration(generation) else { return }
         delegate?.webSocketViabilityDidChange(connection: self, isViable: isViable)
     }
 
@@ -344,10 +345,12 @@ open class NWWebSocket: WebSocketConnection {
         oldConnection?.betterPathUpdateHandler = nil
         oldConnection?.viabilityUpdateHandler = nil
 
+        let generation = beginConnectionGeneration()
         connection = NWConnection(to: endpoint, using: parameters)
         connection?.stateUpdateHandler = { [weak self] state in
             guard let self = self else { return }
-            self.stateDidChange(to: state)
+            guard self.isCurrentConnectionGeneration(generation) else { return }
+            self.stateDidChange(to: state, generation: generation)
 
             // Call completion handler based on connection state
             switch state {
@@ -360,12 +363,12 @@ open class NWWebSocket: WebSocketConnection {
             }
         }
         connection?.betterPathUpdateHandler = { [weak self] isAvailable in
-            self?.betterPath(isAvailable: isAvailable)
+            self?.betterPath(isAvailable: isAvailable, generation: generation)
         }
         connection?.viabilityUpdateHandler = { [weak self] isViable in
-            self?.viabilityDidChange(isViable: isViable)
+            self?.viabilityDidChange(isViable: isViable, generation: generation)
         }
-        listen()
+        listen(connection: connection, generation: generation)
         connection?.start(queue: connectionQueue)
 
         // cancel the old connection after new one is set up
@@ -418,6 +421,7 @@ open class NWWebSocket: WebSocketConnection {
     ///   - data: Some `Data` to send (this should be formatted as binary or UTF-8 encoded text).
     ///   - context: `ContentContext` representing the message to send, and its metadata.
     private func send(data: Data?, context: NWConnection.ContentContext) {
+        let generation = currentConnectionGeneration
         connection?.send(content: data,
                          contentContext: context,
                          isComplete: true,
@@ -425,6 +429,8 @@ open class NWWebSocket: WebSocketConnection {
             guard let self = self else {
                 return
             }
+
+            guard self.isCurrentConnectionGeneration(generation) else { return }
 
             // If a connection closure was sent, inform delegate on completion
             if let socketMetadata = context.protocolMetadata.first as? NWProtocolWebSocket.Metadata,
@@ -440,6 +446,42 @@ open class NWWebSocket: WebSocketConnection {
     }
 
     // MARK: Connection cleanup
+
+    /// Immediately tears down the active transport and reports a disconnect.
+    ///
+    /// This bypasses graceful close semantics so callers can always break out of a wedged
+    /// connection, including stale `.ready` sockets that would otherwise survive a reconnect.
+    private func forceDisconnect(closeCode: NWProtocolWebSocket.CloseCode,
+                                 reason: Data?) {
+        pingTimer?.invalidate()
+        pingTimer = nil
+        isListening = false
+        isMigratingConnection = false
+        errorWhileWaitingCount = 0
+
+        let connectionToCancel = connection
+        connectionToCancel?.intentionalDisconnection = true
+        invalidateConnectionGeneration()
+
+        connection = nil
+
+        disconnectionQueue.sync {
+            disconnectionWorkItem?.cancel()
+            disconnectionWorkItem = nil
+        }
+
+        connectionQueue.async { [weak connectionToCancel] in
+            connectionToCancel?.stateUpdateHandler = nil
+            connectionToCancel?.betterPathUpdateHandler = nil
+            connectionToCancel?.viabilityUpdateHandler = nil
+
+            if connectionToCancel?.state != .cancelled {
+                connectionToCancel?.cancel()
+            }
+        }
+
+        scheduleDisconnectionReporting(closeCode: closeCode, reason: reason)
+    }
 
     /// Schedules the reporting of a WebSocket disconnection.
     ///
@@ -487,6 +529,7 @@ open class NWWebSocket: WebSocketConnection {
             delegate?.webSocketDidReceiveError(connection: self, error: error)
         }
         pingTimer?.invalidate()
+        pingTimer = nil
 
         // Clear connection reference
         connection = nil
@@ -567,5 +610,18 @@ open class NWWebSocket: WebSocketConnection {
         } else {
             return false
         }
+    }
+
+    private func beginConnectionGeneration() -> Int {
+        currentConnectionGeneration += 1
+        return currentConnectionGeneration
+    }
+
+    private func invalidateConnectionGeneration() {
+        currentConnectionGeneration += 1
+    }
+
+    private func isCurrentConnectionGeneration(_ generation: Int) -> Bool {
+        generation == currentConnectionGeneration
     }
 }
