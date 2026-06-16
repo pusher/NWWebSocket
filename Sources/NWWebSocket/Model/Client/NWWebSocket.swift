@@ -256,6 +256,11 @@ open class NWWebSocket: WebSocketConnection {
     /// Disconnect from the WebSocket.
     /// - Parameter closeCode: The code to use when closing the WebSocket connection.
     open func disconnect(closeCode: NWProtocolWebSocket.CloseCode = .protocolCode(.normalClosure)) {
+        if closeCode != .protocolCode(.normalClosure), connection?.state == .ready {
+            sendCloseFrameAndDisconnect(closeCode: closeCode)
+            return
+        }
+
         forceDisconnect(closeCode: closeCode, reason: nil)
     }
 
@@ -446,6 +451,42 @@ open class NWWebSocket: WebSocketConnection {
     }
 
     // MARK: Connection cleanup
+
+    /// Sends a WebSocket close frame on a ready connection, then forces transport teardown.
+    ///
+    /// A fallback timeout preserves the hard disconnect behavior if the send completion never fires.
+    private func sendCloseFrameAndDisconnect(closeCode: NWProtocolWebSocket.CloseCode) {
+        let generation = currentConnectionGeneration
+        let metadata = NWProtocolWebSocket.Metadata(opcode: .close)
+        metadata.closeCode = closeCode
+        let context = NWConnection.ContentContext(identifier: "closeContext",
+                                                  metadata: [metadata])
+        let lock = NSLock()
+        var didForceDisconnect = false
+
+        let forceTeardownIfNeeded: () -> Void = { [weak self] in
+            guard let self = self else { return }
+            guard self.isCurrentConnectionGeneration(generation) else { return }
+
+            lock.lock()
+            defer { lock.unlock() }
+            guard !didForceDisconnect else { return }
+
+            didForceDisconnect = true
+            self.forceDisconnect(closeCode: closeCode, reason: nil)
+        }
+
+        connection?.send(content: nil,
+                         contentContext: context,
+                         isComplete: true,
+                         completion: .contentProcessed({ _ in
+            forceTeardownIfNeeded()
+        }))
+
+        connectionQueue.asyncAfter(deadline: .now() + 0.25) {
+            forceTeardownIfNeeded()
+        }
+    }
 
     /// Immediately tears down the active transport and reports a disconnect.
     ///
