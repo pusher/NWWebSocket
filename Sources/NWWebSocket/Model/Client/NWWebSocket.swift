@@ -48,6 +48,7 @@ open class NWWebSocket: WebSocketConnection {
     public convenience init(request: URLRequest,
                             connectAutomatically: Bool = false,
                             options: NWProtocolWebSocket.Options = NWWebSocket.defaultOptions,
+                            parameters: NWParameters? = nil,
                             connectionQueue: DispatchQueue = .main) {
 
         guard let url = request.url else {
@@ -57,6 +58,7 @@ open class NWWebSocket: WebSocketConnection {
             self.init(url: invalidURL,
                       connectAutomatically: connectAutomatically,
                       options: options,
+                      parameters: parameters,
                       connectionQueue: connectionQueue)
             return
         }
@@ -64,6 +66,7 @@ open class NWWebSocket: WebSocketConnection {
         self.init(url: url,
                   connectAutomatically: connectAutomatically,
                   options: options,
+                  parameters: parameters,
                   connectionQueue: connectionQueue)
     }
 
@@ -77,17 +80,20 @@ open class NWWebSocket: WebSocketConnection {
     public init(url: URL,
                 connectAutomatically: Bool = false,
                 options: NWProtocolWebSocket.Options = NWWebSocket.defaultOptions,
+                parameters: NWParameters? = nil,
                 connectionQueue: DispatchQueue = .main) {
 
         endpoint = .url(url)
 
-        if url.scheme == "ws" {
-            parameters = NWParameters.tcp
+        if let parameters {
+            self.parameters = parameters
+        } else if url.scheme == "ws" {
+            self.parameters = NWParameters.tcp
         } else {
-            parameters = NWParameters.tls
+            self.parameters = NWParameters.tls
         }
 
-        parameters.defaultProtocolStack.applicationProtocols.insert(options, at: 0)
+        self.parameters.defaultProtocolStack.applicationProtocols.insert(options, at: 0)
 
         self.connectionQueue = connectionQueue
 
