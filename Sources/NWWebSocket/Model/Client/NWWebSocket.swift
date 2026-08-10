@@ -188,7 +188,7 @@ open class NWWebSocket: WebSocketConnection {
         guard !isListening else { return }
         isListening = true
 
-        connection?.receiveMessage { [weak self] (data, context, _, error) in
+        connection?.receiveMessage { [weak self] (data, context, isComplete, error) in
             guard let self = self else {
                 return
             }
@@ -198,7 +198,11 @@ open class NWWebSocket: WebSocketConnection {
                 return
             }
 
-            if let data = data, !data.isEmpty, let context = context {
+            if Self.shouldDeliverReceivedMessage(
+                data: data,
+                context: context,
+                isComplete: isComplete
+            ), let data = data, let context = context {
                 self.receiveMessage(data: data, context: context)
             }
 
@@ -210,6 +214,15 @@ open class NWWebSocket: WebSocketConnection {
                 self.listen(connection: self.connection, generation: generation)
             }
         }
+    }
+
+    /// Return `true` only for a complete message that contains data and metadata.
+    internal static func shouldDeliverReceivedMessage(
+        data: Data?,
+        context: NWConnection.ContentContext?,
+        isComplete: Bool
+    ) -> Bool {
+        isComplete && data?.isEmpty == false && context != nil
     }
 
     /// Ping the WebSocket periodically.
