@@ -22,12 +22,15 @@ A WebSocket client written in Swift, using the Network framework from Apple.
 
 ## Supported platforms
 - Swift 5.1 and above
-- Xcode 11.0 and above
+- Xcode 13.0 and above
 
 ### Deployment targets
-- iOS 13.0 and above
-- macOS 10.15 and above
-- tvOS 13.0 and above
+- iOS 15.0 and above
+- macOS 12.0 and above
+- tvOS 15.0 and above
+- watchOS 9.0 and above
+
+If you need support for older versions of iOS, macOS, tvOS or watchOS, please use the latest v0.5.x release.
 
 ## Installation
 
@@ -45,10 +48,10 @@ To integrate NWWebSocket into your Xcode project using CocoaPods, specify it in 
 
 ```ruby
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '14.0'
+platform :ios, '15.0'
 use_frameworks!
 
-pod 'NWWebSocket', '~> 0.5.10'
+pod 'NWWebSocket', '~> 1.0.0'
 ```
 
 Then, run the following command:
@@ -90,7 +93,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pusher/NWWebSocket.git",
-                 .upToNextMajor(from: "0.5.10")),
+                 .upToNextMajor(from: "1.0.0")),
     ],
     targets: [
         .target(
