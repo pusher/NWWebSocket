@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/pusher/NWWebSocket/compare/0.5.10...HEAD)
+## [1.0.0](https://github.com/pusher/NWWebSocket/compare/0.5.10...1.0.0) - Unreleased
+
+### Changed
+
+- **Breaking:** Raised the minimum supported OS versions to iOS 15.0, macOS 12.0, tvOS 15.0 and watchOS 9.0 (from iOS 13.0, macOS 10.15, tvOS 13.0 and watchOS 6.0), required to build under Xcode 27. Consumers still targeting older OS versions should pin to `0.5.10` or earlier. Will ship as `1.0.0` (rather than a 0.x minor) specifically so SwiftPM's `.upToNextMajor` ranges on 0.5.x correctly exclude this breaking release.
 
 ## [0.5.10](https://github.com/pusher/NWWebSocket/compare/0.5.9...0.5.10) - 2026-03-03
 

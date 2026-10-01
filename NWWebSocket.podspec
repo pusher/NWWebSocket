@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = 'NWWebSocket'
-    s.version          = '0.5.10'
+    s.version          = '1.0.0'
     s.summary          = 'A WebSocket client written in Swift, using the Network framework from Apple'
     s.homepage         = 'https://github.com/pusher/NWWebSocket'
     s.license          = 'MIT'
@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
     s.requires_arc  = true
     s.source_files  = ['Sources/**/*.swift']
 
-    s.ios.deployment_target = '13.0'
-    s.osx.deployment_target = '10.15'
-    s.tvos.deployment_target = '13.0'
+    s.ios.deployment_target = '15.0'
+    s.osx.deployment_target = '12.0'
+    s.tvos.deployment_target = '15.0'
 end
